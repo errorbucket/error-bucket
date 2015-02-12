@@ -1,2 +1,6 @@
-db
+.idea
+
+node_modules
+
 client/public/app.js
+data
