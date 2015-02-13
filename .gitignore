@@ -1,6 +1,7 @@
-.idea
+/.idea
 
-node_modules
+/node_modules
 
-client/public/app.js
-data
+/client/public/app.js
+/data/**
+!/data/config.sample.json

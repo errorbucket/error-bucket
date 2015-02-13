@@ -12,10 +12,6 @@
     "type": "git",
     "url": "git://github.com/Lapple/ErrorBoard.git"
   },
-  "config": {
-    "dbfile": "db",
-    "port": 3000
-  },
   "scripts": {
     "start": "npm run browserify && npm run uglify && node eb.js",
     "browserify": "NODE_ENV=production browserify client/app.js -o client/public/app.js",
