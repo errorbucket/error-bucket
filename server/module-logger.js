@@ -13,10 +13,10 @@ app.use(function(req, res) {
         return res.end(400);
     }
 
-    var ua = useragent.parse(req.headers['user-agent']).toJSON();
-    var referer = req.headers.referer;
     var timestamp = Date.now();
     var date = moment(timestamp).format('DD-MM-YYYY');
+    var ua = useragent.parse(req.headers['user-agent']).toJSON();
+    var referer = query.page || req.headers.referer;
 
     var doc = {
         ua: ua,
