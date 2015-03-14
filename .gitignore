@@ -3,5 +3,6 @@
 /node_modules
 
 /client/public/app.js
+/client/public/.app.js
 /data/**
 !/data/config.sample.json
