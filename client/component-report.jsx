@@ -19,37 +19,20 @@ module.exports = React.createClass({
         };
     },
     render: function() {
-        var items;
+        var now = Date.now();
+        var earliest = _.reduce(this.state.index, getEarliest, now);
 
-        if (!_.isNull(this.state.index)) {
-
-            this.state.index.sort(function (a, b) {
-                return b.count - a.count;
-            });
-
-            var itemsPerPage = 50;
-            var page = 0;
-            var infos = this.state.index.splice(itemsPerPage * page, itemsPerPage);
-
-            var now = Date.now();
-            var earliest = _.reduce(this.state.index, getEarliest, now);
-
-            window.info = infos;
-            console.log(window.info);
-
-            items = _.map(infos, function (data) {
-                return <ReportItem
-                    key={ data.key }
-                    type={ this.props.type }
-                    data={ data }
-                    timespan={ {
-                        earliest: earliest,
-                        latest: now
-                    } }
-                    onClick={ _.partial(this.props.onClick, data) } />;
-            }, this);
-
-        }
+        var items = _.map(this.state.index, function(data) {
+            return <ReportItem
+                key={ data.key }
+                type={ this.props.type }
+                data={ data }
+                timespan={ {
+                    earliest: earliest,
+                    latest: now
+                } }
+                onClick={ _.partial(this.props.onClick, data) } />;
+        }, this);
 
         return <div className="report">
             { this.notice() }
@@ -57,7 +40,7 @@ module.exports = React.createClass({
             <table className="report__table">
                 { this.thead() }
                 <tbody>
-                    { _.isNull(this.state.index) ? this.empty() : items }
+                    { items.length ? items: this.empty() }
                 </tbody>
             </table>
         </div>;
