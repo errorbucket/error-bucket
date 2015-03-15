@@ -1,5 +1,6 @@
 var page = require('page');
 var React = require('react');
+var _ = require('lodash');
 
 var Nav = require('./component-nav.jsx');
 var Dashboard = require('./component-dashboard.jsx');
@@ -27,7 +28,7 @@ module.exports = React.createClass({
         </div>;
     },
     renderMain: function() {
-        if (this.props.params.type === 'dashboard') {
+        if (_.isEmpty(this.props.params)) {
             return <Dashboard />;
         }
 
@@ -35,7 +36,7 @@ module.exports = React.createClass({
     },
     renderDetails: function() {
         var params = this.props.params;
-        var detailsType = params.type.slice(0, -1);
+        var detailsType = !_.isEmpty(this.props.params) ? params.type.slice(0, -1) : null;
 
         if (params.id) {
             return <Details
@@ -46,10 +47,10 @@ module.exports = React.createClass({
         }
     },
     _showDetails: function(data) {
-        var url = '/' + this.props.params.type + '/' + encodeURIComponent(data.key) + '/';
+        var url = '/' + this.props.params.type + '/page' + this.props.params.page + '/' + encodeURIComponent(data.key) + '/';
         page.show(url, {details: data.title});
     },
     _hideDetails: function() {
-        page.show('/' + this.props.params.type + '/');
+        page.show('/' + this.props.params.type + '/page' + this.props.params.page + '/');
     }
 });

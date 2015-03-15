@@ -26,8 +26,9 @@ app.get('/error', require('./module-logger'));
 // TODO: Remove.
 app.get('/fake', serveStaticFile(path.join(publicPath, 'fake.html')));
 
-app.get('/:type/:id?', require('./route-index'));
-app.get('/', redirectTo('/messages/'));
+app.get('/dashboard', require('./route-index'));
+app.get('/:type/page:page/:id?', require('./route-index'));
+app.get('/', redirectTo('/messages/page1/'));
 
 ws.installHandlers(server, {prefix: '/ws'});
 
