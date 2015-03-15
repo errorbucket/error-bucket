@@ -114,7 +114,7 @@ module.exports = React.createClass({
         var report = Reports.get(this.props.type, {id: this.props.id});
 
         this.setState({
-            data: toArray(report).sort(sortByLatestReport)
+            data: toArray(report).sort(sortReport)
         });
     },
     updateGraph: function() {
@@ -148,6 +148,11 @@ function toArray(object) {
     });
 }
 
-function sortByLatestReport(a, b) {
-    return b.latest - a.latest;
+function sortReport(a, b) {
+    var key = /__et_sort_by=(latest|count);?/.exec(document.cookie);
+    var sk = key ? key[1] : "count";
+    switch (sk) {
+        case "latest": return (b.latest - a.latest);
+        default : return (b.count - a.count);
+    }
 }
