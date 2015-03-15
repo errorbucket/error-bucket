@@ -26,7 +26,7 @@ var sortMethods = {
         },
         isSorted : function(list) {
             return _.every(list, function(item, index, list) {
-                return index === 0 || list[index - 1].latest > item.latest;
+                return index === 0 || list[index - 1].latest >= item.latest;
             });
         }
     },
@@ -36,7 +36,7 @@ var sortMethods = {
         },
         isSorted : function(list) {
             return _.every(list, function(item, index, list) {
-                return index === 0 || list[index - 1].count > item.count;
+                return index === 0 || list[index - 1].count >= item.count;
             });
         }
     }
