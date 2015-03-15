@@ -102,9 +102,9 @@ module.exports = React.createClass({
         return <thead>
             <tr className='report__row report__row_head'>
                 <th className='report__cell report__cell_head'>{ title }</th>
-                <th className='report__cell report__cell_head report__cell_count' onClick={ _.partial(this.setSortMethod, "count") }>Count</th>
+                <th className='report__cell report__cell_head report__cell_count report__cell_sortable' onClick={ _.partial(this.setSortMethod, "count") }>Count</th>
                 <th className='report__cell report__cell_head report__cell_delta' />
-                <th className='report__cell report__cell_head report__cell_timespan' onClick={ _.partial(this.setSortMethod, "latest") }>Timespan</th>
+                <th className='report__cell report__cell_head report__cell_timespan report__cell_sortable' onClick={ _.partial(this.setSortMethod, "latest") }>Timespan</th>
             </tr>
         </thead>;
     },
