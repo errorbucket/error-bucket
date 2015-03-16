@@ -9,6 +9,8 @@ var Stack = require('./component-stack.jsx');
 var Graph = require('./component-graph.jsx');
 var ReportItem = require('./component-report-item.jsx');
 
+var sortMetod = require('./sort-methods');
+
 module.exports = React.createClass({
     getInitialState: function() {
         var state = {
@@ -114,7 +116,7 @@ module.exports = React.createClass({
         var report = Reports.get(this.props.type, {id: this.props.id});
 
         this.setState({
-            data: toArray(report).sort(sortReport)
+            data: toArray(report).sort(sortMetod.sort)
         });
     },
     updateGraph: function() {
@@ -146,13 +148,4 @@ function toArray(object) {
     return _.map(object, function(value, key) {
         return _.extend(_.clone(value), {key: key});
     });
-}
-
-function sortReport(a, b) {
-    var key = /__et_sort_by=(latest|count);?/.exec(document.cookie);
-    var sk = key ? key[1] : "count";
-    switch (sk) {
-        case "latest": return (b.latest - a.latest);
-        default : return (b.count - a.count);
-    }
 }

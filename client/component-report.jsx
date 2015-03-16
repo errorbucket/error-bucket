@@ -6,41 +6,9 @@ var ReportItem = require('./component-report-item.jsx');
 var Notice = require('./component-notice.jsx');
 var UpdateCounter = require('./component-update-counter.jsx');
 
+var sortMethod = require('./sort-methods');
+
 var HOUR = 60 * 60 * 1000;
-
-var kSortKey = {
-    re : /__et_sort_by=(latest|count);?/,
-    get : function() {
-        var key = this.re.exec(document.cookie);
-        return key ? key[1] : "count";
-    },
-    set : function(key) {
-        document.cookie = '__et_sort_by=' + key + ';';
-    }
-}
-
-var sortMethods = {
-    latest : {
-        sort: function(a, b) {
-            return b.latest - a.latest;
-        },
-        isSorted : function(list) {
-            return _.every(list, function(item, index, list) {
-                return index === 0 || list[index - 1].latest >= item.latest;
-            });
-        }
-    },
-    count : {
-        sort: function(a, b) {
-            return b.count - a.count;
-        },
-        isSorted : function(list) {
-            return _.every(list, function(item, index, list) {
-                return index === 0 || list[index - 1].count >= item.count;
-            });
-        }
-    }
-};
 
 module.exports = React.createClass({
     getInitialState: function() {
@@ -141,7 +109,7 @@ module.exports = React.createClass({
     },
     createIndex: function() {
         var data = Reports.get(this.props.type);
-        var index = _.map(data, addKey).sort(sortMethods[kSortKey.get()]["sort"]);
+        var index = _.map(data, addKey).sort(sortMethod.sort);
 
         this.setState(_.extend(this.getInitialState(), {index: index}));
     },
@@ -157,13 +125,13 @@ module.exports = React.createClass({
 
         this.setState({
             index: index,
-            hasOrderBroken: !sortMethods[kSortKey.get()]["isSorted"](index),
+            hasOrderBroken: !sortMethod.isSorted(index),
             updatesCount: sumDeltas(indexed),
             newCount: rows[1].length
         });
     },
     setSortMethod: function(mtd) {
-        kSortKey.set(mtd);
+        sortMethod.setSortKey(mtd);
         this.createIndex();
     }
 });
