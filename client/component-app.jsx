@@ -52,7 +52,7 @@ module.exports = React.createClass({
         }
     },
     _showDetails: function(data) {
-        var url = '/' + this.props.params.type + '/page' + this.props.params.page + '/' + encodeURIComponent(data.key) + '/';
+        var url = '/' + this.props.params.type + '/page' + this.props.params.page + '/' + encodeURIComponent(encodeURIComponent(data.key)) + '/';
         page.show(url, {details: data.title});
     },
     _hideDetails: function() {
