@@ -32,7 +32,7 @@ module.exports = React.createClass({
             return <Dashboard />;
         }
 
-        return <Report type={ this.props.params.type } onClick={ this._showDetails } />;
+        return <Report type={ this.props.params.type } page={ this.props.params.page } onClick={ this._showDetails } />;
     },
     renderDetails: function() {
         var params = this.props.params;

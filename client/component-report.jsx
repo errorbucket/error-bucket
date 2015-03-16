@@ -1,3 +1,4 @@
+var page = require('page');
 var _ = require('lodash');
 var React = require('react');
 
@@ -5,13 +6,16 @@ var Reports = require('./reports');
 var ReportItem = require('./component-report-item.jsx');
 var Notice = require('./component-notice.jsx');
 var UpdateCounter = require('./component-update-counter.jsx');
+var Pagination = require('./component-pagination.jsx');
 
 var HOUR = 60 * 60 * 1000;
+var ITEMS_PER_PAGE = 30;
 
 module.exports = React.createClass({
     getInitialState: function() {
         return {
             index: null,
+            pageIndex: null,
             lastRefreshed: Date.now(),
             updatesCount: 0,
             newCount: 0,
@@ -19,10 +23,11 @@ module.exports = React.createClass({
         };
     },
     render: function() {
+        var index = this.state.pageIndex;
         var now = Date.now();
         var earliest = _.reduce(this.state.index, getEarliest, now);
 
-        var items = _.map(this.state.index, function(data) {
+        var items = _.map(index, function(data) {
             return <ReportItem
                 key={ data.key }
                 type={ this.props.type }
@@ -43,6 +48,7 @@ module.exports = React.createClass({
                     { items.length ? items: this.empty() }
                 </tbody>
             </table>
+            <Pagination perPage={ ITEMS_PER_PAGE } total={ this.state.index? this.state.index.length : 0 } current={ this.props.page } onClick={ this._jumpToPage }/>
         </div>;
     },
     empty: function() {
@@ -108,8 +114,9 @@ module.exports = React.createClass({
     createIndex: function() {
         var data = Reports.get(this.props.type);
         var index = _.map(data, addKey).sort(sortByLatestReport);
+        var pageIndex = this.updatePageIndex(index);
 
-        this.setState(_.extend(this.getInitialState(), {index: index}));
+        this.setState(_.extend(this.getInitialState(), {index: index, pageIndex: pageIndex}));
     },
     updateIndex: function() {
         var data = Reports.get(this.props.type);
@@ -120,13 +127,22 @@ module.exports = React.createClass({
 
         var rows = partition(indexed, isIndexed);
         var index = rows[0].sort(sortByCurrentIndex);
+        var pageIndex = this.updatePageIndex(index);
 
         this.setState({
             index: index,
+            pageIndex: pageIndex,
             hasOrderBroken: !isSortedByLatest(index),
             updatesCount: sumDeltas(indexed),
             newCount: rows[1].length
         });
+    },
+    updatePageIndex: function(index) {
+        var pageNum = this.props.page;
+        return _.slice(index, (pageNum - 1) * ITEMS_PER_PAGE, pageNum * ITEMS_PER_PAGE);
+    },
+    _jumpToPage: function(num) {
+        page.show('/' + this.props.type + '/page' + num + '/');
     }
 });
 
