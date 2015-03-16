@@ -86,9 +86,11 @@ module.exports = React.createClass({
                 timespan={ false } />;
         }, this);
 
-        return <table className="report__table report__table_details">
-            <tbody>{ items }</tbody>
-        </table>;
+        return <div className='curtain__table'>
+            <table className="report__table report__table_details">
+                <tbody>{ items }</tbody>
+            </table>
+        </div>;
     },
     onKeyUp: function(e) {
         if (e && e.keyCode === 27) {
