@@ -14,10 +14,10 @@ module.exports = React.createClass({
         return <div className='nav'>
             { this.logo() }
             { this.link('/dashboard/', 'Dashboard', icons.dashboard) }
-            { this.link('/messages/', 'Messages', icons.messages) }
-            { this.link('/browsers/', 'Browsers', icons.browsers) }
-            { this.link('/scripts/', 'Scripts', icons.scripts) }
-            { this.link('/pages/', 'Pages', icons.pages) }
+            { this.link('/messages/page1/', 'Messages', icons.messages) }
+            { this.link('/browsers/page1/', 'Browsers', icons.browsers) }
+            { this.link('/scripts/page1/', 'Scripts', icons.scripts) }
+            { this.link('/pages/page1/', 'Pages', icons.pages) }
         </div>;
     },
     link: function(pathname, title, icon) {

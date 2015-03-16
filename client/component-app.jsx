@@ -1,5 +1,6 @@
 var page = require('page');
 var React = require('react');
+var _ = require('lodash');
 
 var Nav = require('./component-nav.jsx');
 var Dashboard = require('./component-dashboard.jsx');
@@ -27,29 +28,34 @@ module.exports = React.createClass({
         </div>;
     },
     renderMain: function() {
-        if (this.props.params.type === 'dashboard') {
+        if (_.isEmpty(this.props.params)) {
             return <Dashboard />;
         }
 
-        return <Report type={ this.props.params.type } onClick={ this._showDetails } />;
+        return <Report type={ this.props.params.type } page={ this.props.params.page } onClick={ this._showDetails } />;
     },
     renderDetails: function() {
         var params = this.props.params;
-        var detailsType = params.type.slice(0, -1);
+        var detailsType = !_.isEmpty(this.props.params) ? params.type.slice(0, -1) : null;
 
         if (params.id) {
+            var title = this.props.state.details;
+            if (!title) {
+                title = params.type === "messages" ?
+                    JSON.parse(params.id)["message"] : params.id;
+            }
             return <Details
                 type={ detailsType }
                 id={ params.id }
-                title={ this.props.state.details || null }
+                title={ title }
                 onClose={ this._hideDetails } />;
         }
     },
     _showDetails: function(data) {
-        var url = '/' + this.props.params.type + '/' + encodeURIComponent(encodeURIComponent(data.key)) + '/';
+        var url = '/' + this.props.params.type + '/page' + this.props.params.page + '/' + encodeURIComponent(encodeURIComponent(data.key)) + '/';
         page.show(url, {details: data.title});
     },
     _hideDetails: function() {
-        page.show('/' + this.props.params.type + '/');
+        page.show('/' + this.props.params.type + '/page' + this.props.params.page + '/');
     }
 });

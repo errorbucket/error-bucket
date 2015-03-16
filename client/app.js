@@ -22,7 +22,8 @@ var updateApp = function(ctx) {
     React.render(app(props), rootNode);
 };
 
-page('/:type/:id?', updateApp);
+page('/:type/page:page/:id?', updateApp);
+page('/dashboard', updateApp);
 
 document.addEventListener('DOMContentLoaded', page.start);
 

@@ -1,3 +1,4 @@
+var page = require('page');
 var _ = require('lodash');
 var React = require('react');
 
@@ -5,13 +6,16 @@ var Reports = require('./reports');
 var ReportItem = require('./component-report-item.jsx');
 var Notice = require('./component-notice.jsx');
 var UpdateCounter = require('./component-update-counter.jsx');
+var Pagination = require('./component-pagination.jsx');
 
 var HOUR = 60 * 60 * 1000;
+var ITEMS_PER_PAGE = 30;
 
 module.exports = React.createClass({
     getInitialState: function() {
         return {
             index: null,
+            pageIndex: null,
             lastRefreshed: Date.now(),
             updatesCount: 0,
             newCount: 0,
@@ -19,37 +23,21 @@ module.exports = React.createClass({
         };
     },
     render: function() {
-        var items;
+        var index = this.state.pageIndex;
+        var now = Date.now();
+        var earliest = _.reduce(this.state.index, getEarliest, now);
 
-        if (!_.isNull(this.state.index)) {
-
-            this.state.index.sort(function (a, b) {
-                return b.count - a.count;
-            });
-
-            var itemsPerPage = 50;
-            var page = 0;
-            var infos = this.state.index.splice(itemsPerPage * page, itemsPerPage);
-
-            var now = Date.now();
-            var earliest = _.reduce(this.state.index, getEarliest, now);
-
-            window.info = infos;
-            console.log(window.info);
-
-            items = _.map(infos, function (data) {
-                return <ReportItem
-                    key={ data.key }
-                    type={ this.props.type }
-                    data={ data }
-                    timespan={ {
-                        earliest: earliest,
-                        latest: now
-                    } }
-                    onClick={ _.partial(this.props.onClick, data) } />;
-            }, this);
-
-        }
+        var items = _.map(index, function(data) {
+            return <ReportItem
+                key={ data.key }
+                type={ this.props.type }
+                data={ data }
+                timespan={ {
+                    earliest: earliest,
+                    latest: now
+                } }
+                onClick={ _.partial(this.props.onClick, data) } />;
+        }, this);
 
         return <div className="report">
             { this.notice() }
@@ -57,9 +45,10 @@ module.exports = React.createClass({
             <table className="report__table">
                 { this.thead() }
                 <tbody>
-                    { _.isNull(this.state.index) ? this.empty() : items }
+                    { items.length ? items: this.empty() }
                 </tbody>
             </table>
+            <Pagination perPage={ ITEMS_PER_PAGE } total={ this.state.index? this.state.index.length : 0 } current={ this.props.page } onClick={ this._jumpToPage }/>
         </div>;
     },
     empty: function() {
@@ -125,8 +114,9 @@ module.exports = React.createClass({
     createIndex: function() {
         var data = Reports.get(this.props.type);
         var index = _.map(data, addKey).sort(sortByLatestReport);
+        var pageIndex = this.updatePageIndex(index);
 
-        this.setState(_.extend(this.getInitialState(), {index: index}));
+        this.setState(_.extend(this.getInitialState(), {index: index, pageIndex: pageIndex}));
     },
     updateIndex: function() {
         var data = Reports.get(this.props.type);
@@ -137,13 +127,22 @@ module.exports = React.createClass({
 
         var rows = partition(indexed, isIndexed);
         var index = rows[0].sort(sortByCurrentIndex);
+        var pageIndex = this.updatePageIndex(index);
 
         this.setState({
             index: index,
+            pageIndex: pageIndex,
             hasOrderBroken: !isSortedByLatest(index),
             updatesCount: sumDeltas(indexed),
             newCount: rows[1].length
         });
+    },
+    updatePageIndex: function(index) {
+        var pageNum = this.props.page;
+        return _.slice(index, (pageNum - 1) * ITEMS_PER_PAGE, pageNum * ITEMS_PER_PAGE);
+    },
+    _jumpToPage: function(num) {
+        page.show('/' + this.props.type + '/page' + num + '/');
     }
 });
 
