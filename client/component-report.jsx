@@ -107,7 +107,7 @@ module.exports = React.createClass({
     },
     createIndex: function() {
         var data = Reports.get(this.props.type);
-        var index = _.map(data, addKey).sort(sortByLatestReport);
+        var index = _.map(data, addKey).sort(sortByCount);
 
         this.setState(_.extend(this.getInitialState(), {index: index}));
     },
@@ -123,7 +123,7 @@ module.exports = React.createClass({
 
         this.setState({
             index: index,
-            hasOrderBroken: !isSortedByLatest(index),
+            hasOrderBroken: !isSortedByCount(index),
             updatesCount: sumDeltas(indexed),
             newCount: rows[1].length
         });
@@ -138,6 +138,10 @@ function sortByLatestReport(a, b) {
     return b.latest - a.latest;
 }
 
+function sortByCount(a, b) {
+    return b.count - a.count;
+}
+
 function sortByCurrentIndex(a, b) {
     return a._index - b._index;
 }
@@ -145,6 +149,12 @@ function sortByCurrentIndex(a, b) {
 function isSortedByLatest(list) {
     return _.every(list, function(item, index, list) {
         return index === 0 || list[index - 1].latest > item.latest;
+    });
+}
+
+function isSortedByCount(list) {
+    return _.every(list, function(item, index, list) {
+        return index === 0 || list[index - 1].count >= item.count;
     });
 }
 
