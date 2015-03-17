@@ -7,6 +7,7 @@ var Notice = require('./component-notice.jsx');
 var UpdateCounter = require('./component-update-counter.jsx');
 
 var HOUR = 60 * 60 * 1000;
+var ITEMS_PER_PAGE = 100;
 
 module.exports = React.createClass({
     getInitialState: function() {
@@ -106,17 +107,18 @@ module.exports = React.createClass({
         }
     },
     createIndex: function() {
-        var data = Reports.get(this.props.type);
-        var index = _.map(data, addKey).sort(sortByCount);
+        var raw = Reports.get(this.props.type);
+        var index = formatRawData(raw);
 
         this.setState(_.extend(this.getInitialState(), {index: index}));
     },
     updateIndex: function() {
-        var data = Reports.get(this.props.type);
+        var raw = Reports.get(this.props.type);
+        var data = formatRawData(raw);
 
         var addIndex = _.partial(addCurrentIndex, this.state.index);
         var addDelta = _.partial(countDelta, this.state.index);
-        var indexed = _.map(data, _.compose(addDelta, addIndex, addKey));
+        var indexed = _.map(data, _.compose(addDelta, addIndex));
 
         var rows = partition(indexed, isIndexed);
         var index = rows[0].sort(sortByCurrentIndex);
@@ -129,6 +131,13 @@ module.exports = React.createClass({
         });
     }
 });
+
+// TODO: These operations(addKey, sort, splice) needs to be moved to server side.
+function formatRawData(data) {
+    return _.map(data, addKey)
+        .sort(sortByCount)
+        .splice(0, ITEMS_PER_PAGE);
+}
 
 function getEarliest(memo, item) {
     return _.min([memo, item.earliest]);
