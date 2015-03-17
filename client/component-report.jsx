@@ -6,6 +6,8 @@ var ReportItem = require('./component-report-item.jsx');
 var Notice = require('./component-notice.jsx');
 var UpdateCounter = require('./component-update-counter.jsx');
 
+var sortMethod = require('./sort-methods');
+
 var HOUR = 60 * 60 * 1000;
 
 module.exports = React.createClass({
@@ -68,9 +70,9 @@ module.exports = React.createClass({
         return <thead>
             <tr className='report__row report__row_head'>
                 <th className='report__cell report__cell_head'>{ title }</th>
-                <th className='report__cell report__cell_head report__cell_count'>Count</th>
+                <th className='report__cell report__cell_head report__cell_count report__cell_sortable' onClick={ _.partial(this.setSortMethod, "count") }>Count</th>
                 <th className='report__cell report__cell_head report__cell_delta' />
-                <th className='report__cell report__cell_head report__cell_timespan'>Timespan</th>
+                <th className='report__cell report__cell_head report__cell_timespan report__cell_sortable' onClick={ _.partial(this.setSortMethod, "latest") }>Timespan</th>
             </tr>
         </thead>;
     },
@@ -107,7 +109,7 @@ module.exports = React.createClass({
     },
     createIndex: function() {
         var data = Reports.get(this.props.type);
-        var index = _.map(data, addKey).sort(sortByLatestReport);
+        var index = _.map(data, addKey).sort(sortMethod.sort);
 
         this.setState(_.extend(this.getInitialState(), {index: index}));
     },
@@ -123,10 +125,14 @@ module.exports = React.createClass({
 
         this.setState({
             index: index,
-            hasOrderBroken: !isSortedByLatest(index),
+            hasOrderBroken: !sortMethod.isSorted(index),
             updatesCount: sumDeltas(indexed),
             newCount: rows[1].length
         });
+    },
+    setSortMethod: function(mtd) {
+        sortMethod.setSortKey(mtd);
+        this.createIndex();
     }
 });
 
@@ -134,18 +140,8 @@ function getEarliest(memo, item) {
     return _.min([memo, item.earliest]);
 }
 
-function sortByLatestReport(a, b) {
-    return b.latest - a.latest;
-}
-
 function sortByCurrentIndex(a, b) {
     return a._index - b._index;
-}
-
-function isSortedByLatest(list) {
-    return _.every(list, function(item, index, list) {
-        return index === 0 || list[index - 1].latest > item.latest;
-    });
 }
 
 function partition(list, fn) {
