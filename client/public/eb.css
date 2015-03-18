@@ -2,6 +2,7 @@
 html, body {
     padding: 0;
     margin: 0;
+    min-width: 960px;
 }
 
 ._u {
@@ -28,7 +29,7 @@ html, body, .app, .container, .menu, .content {
 }
 
 .logo {
-    font: 300 18px/20px "Raleway" sans-serif;
+    font: 300 18px/20px "Raleway", sans-serif;
 }
 
 .logo__info {
@@ -93,6 +94,7 @@ html, body, .app, .container, .menu, .content {
 
     font-size: 18px;
     line-height: 1.3;
+    min-height: 1.3em;
     color: rgb(10, 10, 10);
 }
 
@@ -402,13 +404,20 @@ html, body, .app, .container, .menu, .content {
     width: 500px;
     padding: 20px;
 
+    display: flex;
+    flex-direction: column;
+
     visibility: visible;
     background: rgba(244, 248, 252, 0.95);
-    box-shadow: -1px 0 rgba(0, 10, 20, 0.05);
+    box-shadow: -5px 0 15px rgba(0, 10, 20, 0.05);
 
     -webkit-transform: translateX(540px);
     transform: translateX(540px);
     transition: 0.25s;
+}
+
+.curtain > div {
+    display: flex;
 }
 
 .curtain_visible {
@@ -417,25 +426,25 @@ html, body, .app, .container, .menu, .content {
 }
 
 .curtain__close {
-    float: right;
-    position: relative;
+    position: absolute;
+    right: 16px;
+
     width: 16px;
     height: 16px;
-    margin: 1px 0 10px 10px;
 
     cursor: pointer;
 }
 
 .curtain__graph {
-    position: absolute;
-    left: 1px;
-    right: 1px;
-    bottom: -5px;
+    display: block !important;
+    height: 200px;
+    margin: -20px;
+    padding-top: 40px;
 }
 
 .curtain__table {
+    flex: 1;
     overflow-y: auto;
-    height: calc(100% - 250px);
 }
 
 .graph__main {
