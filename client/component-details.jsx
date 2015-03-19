@@ -31,20 +31,23 @@ module.exports = React.createClass({
         });
 
         return <div className={ classes }>
+            { this.renderCloseButton() }
             { this.renderTitle() }
             { this.renderStackTrace() }
             { this.renderTable() }
             { this.renderGraph() }
         </div>;
     },
+    renderCloseButton: function(){
+      return <div onClick={ this.props.onClose } className='curtain__close'>
+          <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'>
+              <path fill='#777' d='M15 1.7l-.7-.7-6.3 6.299-6.3-6.299-.7.7 6.3 6.3-6.3 6.299.7.701 6.3-6.3 6.3 6.3.7-.701-6.3-6.299 6.3-6.3z'/>
+          </svg>
+      </div>;
+    },
     renderTitle: function() {
         if (this.props.title) {
             return <div className='title'>
-                <div onClick={ this.props.onClose } className='curtain__close'>
-                    <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'>
-                        <path fill='#777' d='M15 1.7l-.7-.7-6.3 6.299-6.3-6.299-.7.7 6.3 6.3-6.3 6.299.7.701 6.3-6.3 6.3 6.3.7-.701-6.3-6.299 6.3-6.3z'/>
-                    </svg>
-                </div>
                 { this.props.title }
             </div>;
         } else {
