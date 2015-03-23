@@ -2,6 +2,7 @@ var http = require('http');
 var path = require('path');
 
 var express = require('express');
+var session = require('express-session');
 var favicon = require('serve-favicon');
 var compression = require('compression');
 var passport = require('passport');
@@ -22,7 +23,11 @@ app.set('views', __dirname);
 
 app.use(favicon(path.join(publicPath, 'favicon.ico')));
 app.use(compression());
+app.use(session({secret: 'baixing_error_tracker'}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/static', express.static(publicPath));
+
 app.get('/error', require('./module-logger'));
 
 // TODO: Remove.
