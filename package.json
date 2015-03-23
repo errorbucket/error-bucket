@@ -42,11 +42,12 @@
     "vow": "^0.4.8"
   },
   "devDependencies": {
-    "nodemon": "^1.2.1",
     "browserify": "9.0.x",
     "browserify-shim": "3.8.x",
-    "watchify": "2.4.x",
-    "reactify": "1.0.x"
+    "nodemon": "^1.2.1",
+    "passport-google-oauth": "^0.2.0",
+    "reactify": "1.0.x",
+    "watchify": "2.4.x"
   },
   "browserify": {
     "transform": [
