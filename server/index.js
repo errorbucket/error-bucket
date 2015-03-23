@@ -23,7 +23,11 @@ app.set('views', __dirname);
 
 app.use(favicon(path.join(publicPath, 'favicon.ico')));
 app.use(compression());
-app.use(session({secret: 'baixing_error_tracker'}));
+app.use(session({
+    secret: 'baixing_error_tracker',
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/static', express.static(publicPath));
@@ -37,7 +41,7 @@ app.get('/login', function(req, res, next) {
     else next();
 }, require('./route-login'));
 
-app.get('/auth/google', passport.authenticate('google', { scope: 'profile' }));
+app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.email' }));
 app.get('/auth/callback/google', passport.authenticate('google', {
     successRedirect: '/',
     failureRedirect: '/login/'
