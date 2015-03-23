@@ -4,10 +4,12 @@ var path = require('path');
 var express = require('express');
 var favicon = require('serve-favicon');
 var compression = require('compression');
+var passport = require('passport');
 
 var ws = require('./websockets');
 var serveStaticFile = require('./middleware-static-file');
 var redirectTo = require('./redirect-to');
+var passportConfig = require('../config/passport');
 
 var app = express();
 var server = http.createServer(app);
