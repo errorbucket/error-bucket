@@ -16,7 +16,6 @@ module.exports = function(passport) {
         callbackURL : config.oauth2.google.callbackURL
     },
     function(token, refreshToken, profile, done) {
-        console.log(token);
         process.nextTick(function() {
             return done(null, profile);
         });

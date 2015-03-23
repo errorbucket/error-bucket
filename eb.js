@@ -1,6 +1,6 @@
 require('./server/require-jsx')();
 
-var config = require('./config/config.js');
+var config = require('./config/config');
 var server = require('./server');
 
 server.listen(config.port);
