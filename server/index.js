@@ -28,14 +28,14 @@ app.get('/error', require('./module-logger'));
 // TODO: Remove.
 //app.get('/fake', serveStaticFile(path.join(publicPath, 'fake.html')));
 app.get('/login', function(req, res, next) {
-    if (req.isAuthenticated()) redirectTo('/');
+    if (req.isAuthenticated()) res.redirect('/');
     else next();
 }, require('./route-login'));
 
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile' }));
 app.get('/auth/callback/google', passport.authenticate('google', {
     successRedirect: '/',
-    failureRedirect: '/login'
+    failureRedirect: '/login/'
 }));
 
 app.get('/reports/:type', isAuthenticated, require('./route-reports'));
@@ -43,8 +43,12 @@ app.get('/:type/:id?', isAuthenticated, require('./route-index'));
 app.get('/', isAuthenticated, redirectTo('/messages/'));
 
 function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    else redirectTo('/login');
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    else  {
+        res.redirect('/login/');
+    }
 }
 
 ws.installHandlers(server, {prefix: '/ws'});
