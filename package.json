@@ -31,7 +31,7 @@
     "nedb": "^1.1.1",
     "page": "1.6.x",
     "passport": "^0.2.1",
-    "passport-google": "^0.3.0",
+    "passport-google-oauth": "^0.2.0",
     "react": "0.12.x",
     "react-tools": "^0.12.2",
     "serve-favicon": "^2.0.0",
@@ -45,7 +45,6 @@
     "browserify": "9.0.x",
     "browserify-shim": "3.8.x",
     "nodemon": "^1.2.1",
-    "passport-google-oauth": "^0.2.0",
     "reactify": "1.0.x",
     "watchify": "2.4.x"
   },
