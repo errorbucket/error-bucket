@@ -1,0 +1,11 @@
+{
+  "dbfile": "data/db",
+  "port": 3000,
+  "oauth2": {
+    "google": {
+      "clientID"      : "<Your Google Client ID>",
+      "clientSecret"  : "<Your Google Client Secret>",
+      "callbackURL"   : "http://localhost:3000/auth/callback/google"
+    }
+  }
+}
