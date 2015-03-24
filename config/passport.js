@@ -20,9 +20,9 @@ module.exports = function(passport) {
 };
 
 function validateBaixingEmail(token, refreshToken, profile, done) {
-    var valid = true;
+    var valid = false;
     profile.emails && _.forEach(profile.emails, function(n) {
-        valid = valid && n.value && /@baixing\.(com|net)$/.test(n.value);
+        valid = valid || (n.value && /@baixing\.(com|net)$/.test(n.value));
     });
-    return done(null, valid ? profile : false);
+    return done(null, valid);
 }
