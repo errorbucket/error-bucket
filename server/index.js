@@ -1,5 +1,6 @@
 var http = require('http');
 var path = require('path');
+var cookieParser = require('cookie-parser');
 
 var express = require('express');
 var session = require('express-session');
@@ -25,6 +26,9 @@ app.use('/static', express.static(publicPath));
 var config = require('../config/config.js');
 // if auth field of config.json is not configured, no authentication will be performed
 if (config.auth) {
+    var kLoggedIn = 'baixing_error_tracker_loggedin';
+
+    app.use(cookieParser());
     app.use(session({
         secret: 'baixing_error_tracker',
         resave: false,
@@ -42,15 +46,27 @@ if (config.auth) {
     }, require('./route-login'));
     app.get('/logout', function (req, res) {
         req.logout();
+        res.clearCookie(kLoggedIn);
         res.redirect('/');
     });
 
     // Google specific configuration
     app.get('/auth/google', passport.authenticate('google', {scope: 'https://www.googleapis.com/auth/userinfo.email'}));
-    app.get('/auth/callback/google', passport.authenticate('google', {
-        successRedirect: '/',
-        failureRedirect: '/login/error'
-    }));
+    //app.get('/auth/callback/google', passport.authenticate('google', {
+    //    successRedirect: '/',
+    //    failureRedirect: '/login/error'
+    //}));
+    app.get('/auth/callback/google', function(req, res, next) {
+        passport.authenticate('google', function(err, user, info) {
+            if (err) { return next(err); }
+            if (!user) { return res.redirect('/login/error'); }
+            req.logIn(user, function(err) {
+                if (err) { return next(err); }
+                res.cookie(kLoggedIn, 'true');
+                return res.redirect('/');
+            });
+        })(req, res, next);
+    });
 }
 
 // TODO: Remove.

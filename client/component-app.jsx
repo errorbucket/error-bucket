@@ -16,7 +16,7 @@ module.exports = React.createClass({
     render: function() {
         return <div className='container'>
             <div className='menu'>
-                <Nav pathname={ this.props.pathname } />
+                <Nav pathname={ this.props.pathname } logout={ this.props.logout } />
             </div>
             <div className='content'>
                 { this.renderMain() }
