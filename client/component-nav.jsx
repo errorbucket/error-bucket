@@ -19,7 +19,7 @@ module.exports = React.createClass({
             { this.link('/browsers/', 'Browsers', icons.browsers, 'internal') }
             { this.link('/scripts/', 'Scripts', icons.scripts, 'internal') }
             { this.link('/pages/', 'Pages', icons.pages, 'internal') }
-            { this.link('/logout', 'Logout', icons.logout, 'external') }
+            { this.props.logout ? this.link('/logout', 'Logout', icons.logout, 'external') : null }
         </div>;
     },
     link: function(pathname, title, icon, target) {
