@@ -23,16 +23,62 @@ Track and fix JavaScript errors fired by your visitor's browsers.
 
 ### Configuration
 
-Edit the `config` section of `package.json`:
+Edit the `config.json` under `config` directory:
 
 ```js
-// ...
-"config": {
-    "dbfile": "db", // path to database file
-    "port": 3000    // web application port
-},
-// ...
+{
+  "dbfile": "db", // path to database file
+  "port": 3000    // web application port
+}
 ```
+
+If you do not have a `config.json` under `config` directory, `config.sample.json` will be used to generate a new `config.json` for you. This way, you can get a quick start to explore this project.
+
+### Access Control
+
+By default, this project can be viewed by anyone who knows the URL. If you want to add access control, you can configure it in `config.json` as well:
+
+```js
+{
+  "dbfile": "data/db",
+  "port": 3000,
+  "baseurl": "<Root Path of the Project>",
+  "auth": {
+    "emailpattern": "<Your Email Pattern>",
+    "methods": {
+      "google-oauth2": {
+        "enabled": true,
+        "clientID": "<Your Client ID>",
+        "clientSecret": "<Your Secret>"
+      }
+    }
+  }
+}
+```
+
+This project makes use of [Passport.js](http://passportjs.org/), which supports more than 140 authentication strategies including your favorite social authentications like Facebook, Twitter and Google. It's worthwhile to take a minute to learn how to use this middleware.
+
+If `auth` field is not set in `config.json` or the `enabled` field of all the methods are set to `false`, then no authentication will be enforced. Everyone can view the content of this project. Otherwise, the methods that have `enabled` field set to `true` will be used to authenticate users.
+
+`emailpattern` under `auth` is optional. If it is not set, everyone who passes the authentication API can log into the project. Otherwise, the users' email addresses will be validated after authentication API has returned.
+
+`emailpattern` can be either regexp or array. For example:
+
+```json
+"auth": {
+    "emailpattern": "@baixing\\.(com|net)$",  
+}
+
+vs.
+
+"auth": {
+    "emailpattern": ["@baixing\\.com", "@baixing\\.net"],
+}
+```
+
+Both ways are supported.
+
+Fields under `methods` should match the name of the corresponding adapter. For example, `google-oauth2` in the example above matches the name of `authentication-google-oauth2.js`.
 
 ### Running
 
@@ -84,4 +130,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
