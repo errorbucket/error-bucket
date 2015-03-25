@@ -1,28 +1,43 @@
 var _ = require('lodash');
 
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var config = require('./config.js');
 
-module.exports = function(passport) {
-    passport.serializeUser(function(user, done) {
+var strategies = {
+    googleOAuth2 : require('passport-google-oauth').OAuth2Strategy
+    /*
+    facebook : require('passport-facebook').Strategy,
+    twitter : require('passport-twitter').Strategy
+     */
+};
+
+/**
+ * Configure passport object to use specified strategy
+ * @param passportObj
+ * @param type - name of strategy
+ */
+module.exports = function(passportObj, type) {
+    if (!config.auth) return;
+
+    var strategy = strategies[type];
+    var strategyConf = config.auth[type];
+
+    passportObj.serializeUser(function(user, done) {
         done(null, user);
     });
 
-    passport.deserializeUser(function(obj, done) {
+    passportObj.deserializeUser(function(obj, done) {
         done(null, obj);
     });
 
-    passport.use(new GoogleStrategy({
-        clientID: config.oauth2.google.clientID,
-        clientSecret : config.oauth2.google.clientSecret,
-        callbackURL : config.oauth2.google.callbackURL
-    }, validateBaixingEmail));
+    passportObj.use(new strategy(strategyConf, function(token, refreshToken, profile, done) {
+        return done(null, baixingEmailRule(profile));
+    }));
 };
 
-function validateBaixingEmail(token, refreshToken, profile, done) {
+function baixingEmailRule(profile) {
     var valid = false;
     profile.emails && _.forEach(profile.emails, function(n) {
         valid = valid || (n.value && /@baixing\.(com|net)$/.test(n.value));
     });
-    return done(null, valid);
+    return valid;
 }
