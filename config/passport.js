@@ -30,7 +30,7 @@ module.exports = function(passportObj, type) {
     });
 
     passportObj.use(new strategy(strategyConf, function(token, refreshToken, profile, done) {
-        return done(null, baixingEmailRule(profile));
+        return done(null, baixingEmailRule(profile)); // here you can cascade as many custom validation rules by using && operator
     }));
 };
 
