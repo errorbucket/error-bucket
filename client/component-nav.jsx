@@ -13,20 +13,21 @@ module.exports = React.createClass({
 
         return <div className='nav'>
             { this.logo() }
-            { this.link('/dashboard/', 'Dashboard', icons.dashboard) }
-            { this.link('/messages/', 'Messages', icons.messages) }
-            { this.link('/browsers/', 'Browsers', icons.browsers) }
-            { this.link('/scripts/', 'Scripts', icons.scripts) }
-            { this.link('/pages/', 'Pages', icons.pages) }
+            { this.link('/dashboard/', 'Dashboard', icons.dashboard, 'internal') }
+            { this.link('/messages/', 'Messages', icons.messages, 'internal') }
+            { this.link('/browsers/', 'Browsers', icons.browsers, 'internal') }
+            { this.link('/scripts/', 'Scripts', icons.scripts, 'internal') }
+            { this.link('/pages/', 'Pages', icons.pages, 'internal') }
+            { this.link('/logout', 'Logout', 'X', 'external') }
         </div>;
     },
-    link: function(pathname, title, icon) {
+    link: function(pathname, title, icon, target) {
         var classes = cx({
             'nav__link': true,
             'nav__link_active': this.props.pathname.indexOf(pathname) === 0
         });
 
-        return <a className={ classes } href={ pathname } title={ title }>
+        return <a className={ classes } href={ pathname } title={ title } rel={ target }>
             <span className='nav__icon'>
                 { icon }
             </span>
