@@ -36,17 +36,17 @@ app.get('/error', require('./module-logger'));
 
 // TODO: Remove.
 //app.get('/fake', serveStaticFile(path.join(publicPath, 'fake.html')));
-app.get('/login', function(req, res, next) {
+app.get('/login/:error?', function (req, res, next) {
     if (req.isAuthenticated()) res.redirect('/');
     else next();
 }, require('./route-login'));
 
-app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.email' }));
+app.get('/auth/google', passport.authenticate('google', {scope: 'https://www.googleapis.com/auth/userinfo.email'}));
 app.get('/auth/callback/google', passport.authenticate('google', {
     successRedirect: '/',
-    failureRedirect: '/login/'
+    failureRedirect: '/login/error'
 }));
-app.get('/logout', function(req, res) {
+app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
@@ -59,7 +59,7 @@ function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    else  {
+    else {
         res.redirect('/login/');
     }
 }
