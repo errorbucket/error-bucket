@@ -46,6 +46,10 @@ app.get('/auth/callback/google', passport.authenticate('google', {
     successRedirect: '/',
     failureRedirect: '/login/'
 }));
+app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
 
 app.get('/reports/:type', isAuthenticated, require('./route-reports'));
 app.get('/:type/:id?', isAuthenticated, require('./route-index'));
