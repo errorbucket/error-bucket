@@ -2,10 +2,24 @@
   "dbfile": "data/db",
   "port": 3000,
   "auth": {
-    "googleOAuth2": {
-      "clientID"      : "<Your Google Client ID>",
-      "clientSecret"  : "<Your Google Client Secret>",
-      "callbackURL"   : "http://localhost:3000/auth/callback/google"
+    "useAuth": true,
+    "sessionInfo": {
+      "name": "<Your Session Name>",
+      "secret": "<Your Session Secret>",
+      "loggedInCookieName": "<Your Cookie Name> (must match the name in client/app.js)"
+    },
+    "methods": {
+      "google-oauth2": {
+        "strategyConfiguration": {
+          "clientID": "<Your Client ID>",
+          "clientSecret": "<Your Secret>",
+          "callbackURL": "<Your callback URL>"
+        },
+        "authenticationConfiguration": {
+          "scope": "https://www.googleapis.com/auth/userinfo.email"
+        }
+      }
+
     }
   }
 }

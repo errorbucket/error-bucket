@@ -7,7 +7,7 @@ module.exports = function(req, res) {
     var props = {
         params: req.params,
         pathname: req.path,
-        logout: !!config.auth
+        logout: (config.auth && config.auth.useAuth === true)
     };
 
     res.render('template-index', {
