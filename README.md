@@ -23,16 +23,38 @@ Track and fix JavaScript errors fired by your visitor's browsers.
 
 ### Configuration
 
-Edit the `config` section of `package.json`:
+Edit the `config.json` under `config` directory:
 
 ```js
-// ...
-"config": {
-    "dbfile": "db", // path to database file
-    "port": 3000    // web application port
-},
-// ...
+{
+  "dbfile": "db", // path to database file
+  "port": 3000    // web application port
+}
 ```
+
+If you do not have a `config.json` under `config` directory, `config.sample.json` will be used to generate a new `config.json` for you. This way, you can get a quick start to explore this project.
+
+### Access Control
+
+By default, this project can be viewed by anyone who knows the URL. If you want to add access control, you can configure it in `config.json` as well:
+
+```js
+{
+  "dbfile": "data/db",
+  "port": 3000,
+  "auth": {
+    "googleOAuth2": {
+      "clientID"      : "<Your Google Client ID>",
+      "clientSecret"  : "<Your Google Client Secret>",
+      "callbackURL"   : "http://localhost:3000/auth/callback/google"
+    }
+  }
+}
+```
+
+This project makes use of [Passport.js](http://passportjs.org/), which supports more than 140 authentication strategies including your favorite social authentications like Facebook, Twitter and Google. It's worthwhile to take a minute to learn how to use this middleware.
+
+If an `auth` field is set in the `config.json`, the application will try to authenticate the identity of the user. In this project, Google OAuth2.0 is used as an example. You need to create a `passport` instance for each strategy you plan to use in `index.js`. 
 
 ### Running
 
@@ -84,4 +106,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-

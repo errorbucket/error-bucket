@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
-var sampleFile = path.resolve('./data/config.sample.json');
-var configFile = path.resolve('./data/config.json');
+var sampleFile = path.resolve('./config/config.sample.json');
+var configFile = path.resolve('./config/config.json');
 var config;
 
 try {
