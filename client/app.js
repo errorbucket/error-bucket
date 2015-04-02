@@ -14,7 +14,7 @@ var updateApp = function(ctx) {
         _context = ctx;
     }
 
-    var loggedin = cookie.load('baixing_error_tracker_loggedin');
+    var loggedin = cookie.load('error_board_logged_in');
 
     var props = {
         state: _context.state,
