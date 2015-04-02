@@ -1,5 +1,6 @@
 var page = require('page');
 var React = require('react');
+var cookie = require('react-cookie');
 
 var Reports = require('./reports');
 var App = require('./component-app.jsx');
@@ -13,10 +14,13 @@ var updateApp = function(ctx) {
         _context = ctx;
     }
 
+    var loggedin = cookie.load('error_board_logged_in');
+
     var props = {
         state: _context.state,
         params: _context.params,
-        pathname: _context.pathname
+        pathname: _context.pathname,
+        logout: !!loggedin
     };
 
     React.render(app(props), rootNode);
