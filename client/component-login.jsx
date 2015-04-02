@@ -1,4 +1,5 @@
 var React = require('react');
+var _ = require('lodash');
 
 module.exports = React.createClass({
     render: function () {
@@ -7,7 +8,11 @@ module.exports = React.createClass({
             { this.renderError() }
                 <div>
                     Login with:
-                    <a href='/auth/google'>Google</a>
+                </div>
+                <div>
+                    <ul>
+                        { this.renderMethods() }
+                    </ul>
                 </div>
             </div>
         </div>;
@@ -17,5 +22,15 @@ module.exports = React.createClass({
             return <div className="login-error">
                 Login Error. Please try again.
             </div>
+    },
+    renderMethods: function() {
+        var methods = [];
+        _.forEach(this.props.authMethods, function(val) {
+            var href = '/auth/'+val;
+            methods.push(
+                <li key={ val }><a href={ href }>{ val }</a></li>
+            );
+        });
+        return methods;
     }
 });

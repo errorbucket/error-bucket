@@ -5,40 +5,27 @@ var passport = require('passport');
 
 var config = require('../../config/config');
 
-// additional rules to be applied after open authentication has returned
-var additionalRules = require('./additional-validation-rules');
-function composeRules(profile) {
-    var rtn = true;
-    _.forEach(additionalRules, function(n) {
-        rtn = rtn && n(profile);
-    });
-    return rtn;
-}
-
 module.exports = function(app) {
-    // if auth field of config.json is not configured or authentication is set not
-    // to be used, no authentication will be performed
-    if (!config.auth || config.auth.useAuth !== true) return false;
+    if (!config.useAuth) return false;
 
     // cookie key used to indicate logged in status
     // set the key in config.json.
     // NOTE: this key MUST match the key used in client/app.js
-    var kLoggedIn = config.auth.sessionInfo.loggedInCookieName;
+    var kLoggedIn = 'error_board_logged_in';
 
     app.use(cookieParser());
     app.use(session({
-        secret: config.auth.sessionInfo.secret,
+        secret: 'error_board',
         resave: false,
         saveUninitialized: false,
-        name: config.auth.sessionInfo.name
+        name: 'error_board.sid'
     }));
 
-    var methods = config.auth.methods;
+    var methods = config.authMethods;
     _.forEach(methods, function(val, key) {
         try {
             // dynamic module loading, may lead to exceptions
-            var authAdapter = require('./authentication-'+key)(val);
-            if (!authAdapter) throw "no strategy";
+            var authAdapter = require('./authentication-'+key)(val, config.baseurl);
             configurePassport(passport, authAdapter);
         } catch (e) { console.log(e); }
     });
@@ -49,8 +36,7 @@ module.exports = function(app) {
     _.forEach(methods, function(val, key) {
         try {
             // dynamic module loading, may lead to exceptions
-            var authAdapter = require('./authentication-'+key)(val);
-            if (!authAdapter) throw "no strategy";
+            var authAdapter = require('./authentication-'+key)(val, config.baseurl);
 
             var strategyName = authAdapter.strategyName,
                 authenticationConfiguration = authAdapter.authenticationConfiguration;
@@ -93,6 +79,33 @@ function configurePassport(passportObj, authAdapter) {
 
     passportObj.use(new authAdapter.strategy(
         authAdapter.strategyConfiguration, function(token, refreshToken, profile, done) {
-        return done(null, composeRules(profile));
+        return done(null, (function(profile) {
+            if (!config.auth.emailpattern) return true;
+            if (_.isArray(config.auth.emailpattern)) {
+                return validateEmailWithSuffixArray(profile, config.auth.emailpattern);
+            } else {
+                return validateEmailWithPattern(profile, config.auth.emailpattern);
+            }
+        })(profile));
     }));
+}
+
+function validateEmailWithSuffixArray (profile, array) {
+    var valid = false;
+    profile.emails && _.forEach(profile.emails, function(n) {
+        try {
+            var suffix = /^.+@(.+)$/.exec(n.value)[1];
+            valid = valid || (n.value && _.contains(array, suffix));
+        } catch (e) {console.log(e);}
+    });
+    return valid;
+}
+
+function validateEmailWithPattern (profile, pattern) {
+    var valid = false;
+    var re = new RegExp(pattern);
+    profile.emails && _.forEach(profile.emails, function(n) {
+        valid = valid || (n.value && re.test(n.value));
+    });
+    return valid;
 }
