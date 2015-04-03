@@ -10,7 +10,7 @@ app.use(function(req, res) {
     var query = req.query;
 
     if (!query.message || !query.url) {
-        return res.end(400);
+        return res.status(400).end();
     }
 
     var timestamp = Date.now();
