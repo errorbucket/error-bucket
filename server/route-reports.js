@@ -16,6 +16,6 @@ module.exports = function(req, res) {
             }
         });
     } else {
-        res.end(400);
+        res.status(400).end();
     }
 };
