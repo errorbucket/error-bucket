@@ -32,6 +32,7 @@
     "nedb": "^1.1.1",
     "page": "1.6.x",
     "passport": "^0.2.1",
+    "passport-github": "^0.1.5",
     "passport-google-oauth": "^0.2.0",
     "react": "0.12.x",
     "react-cookie": "^0.1.7",
