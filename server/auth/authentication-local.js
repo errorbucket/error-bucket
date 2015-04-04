@@ -13,7 +13,7 @@ if (enabled) {
 
     var strategy = require('passport-local').Strategy;
     var strategyName = 'local';
-    var users = method.users || [{ username: 'admin', password: '21232f297a57a5a743894a0e4a801fc3' }]; // pass: admin
+    var users = method.users || [{ username: 'admin', password: '21232f297a57a5a743894a0e4a801fc3' }]; // admin
 
     exports.strategyName = strategyName;
     exports.strategy = new strategy(function(username, password, done) {
