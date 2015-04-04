@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var passport = require('passport');
 
 var config = require('../../config/config');
@@ -19,6 +20,9 @@ module.exports = function (app) {
         resave: false,
         saveUninitialized: false,
         name: 'error_board.sid'
+    }));
+    app.use(bodyParser.urlencoded({
+        extended: true
     }));
 
     passport.serializeUser(function (user, done) {
@@ -49,9 +53,13 @@ module.exports = function (app) {
 
         var strategyName = authAdapter.strategyName,
             authenticationConfiguration = authAdapter.authenticationConfiguration;
-        app.get('/auth/' + strategyName,
-            passport.authenticate(strategyName, authenticationConfiguration));
-        app.get('/auth/callback/' + strategyName, callbackAuthenticate(strategyName));
+        if (strategyName === 'local') {
+            app.post('/auth/local', callbackAuthenticate('local'));
+        } else {
+            app.get('/auth/' + strategyName,
+                passport.authenticate(strategyName, authenticationConfiguration));
+            app.get('/auth/callback/' + strategyName, callbackAuthenticate(strategyName));
+        }
     });
 
     app.get('/login/:error?', function (req, res, next) {
