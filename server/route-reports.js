@@ -10,7 +10,7 @@ module.exports = function(req, res) {
     if (aggregator) {
         db.find({}, function(err, docs) {
             if (err) {
-                res.json(400, { error: err });
+                res.status(400).json({ error: err });
             } else {
                 res.json(_.reduce(docs, aggregator(req.query), {}));
             }
