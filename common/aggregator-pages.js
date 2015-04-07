@@ -1,15 +1,19 @@
 var aggregate = require('./aggregate');
 var reduceTimestamps = require('./reduce-timestamps');
 var reduceBrowsers = require('./reduce-browsers');
+var composeSHAFunc = require('./compose-sha');
+
+var getSHATitlePage = composeSHAFunc(getTitlePage);
 
 module.exports = function() {
     return aggregate({
-        groupBy: getTitlePage,
+        groupBy: getSHATitlePage,
         create: function(item) {
             return {
                 title: getTitlePage(item),
                 count: 0,
-                browsers: []
+                browsers: [],
+                id: getSHATitlePage(item)
             };
         },
         each: function(obj, next) {

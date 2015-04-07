@@ -1,6 +1,7 @@
 var aggregate = require('./aggregate');
 var reduceTimestamps = require('./reduce-timestamps');
 var reduceBrowsers = require('./reduce-browsers');
+var sha = require('./sha-hash');
 
 module.exports = function(params) {
     return aggregate({
@@ -9,13 +10,14 @@ module.exports = function(params) {
             var url = item.url;
             var line = item.line || 0;
 
-            return (url + ':' + line) === params.id;
+            return sha(url + ':' + line) === params.id;
         },
         create: function(item) {
             return {
                 title: item.message,
                 count: 0,
-                browsers: []
+                browsers: [],
+                id: sha(item.message)
             };
         },
         each: function(obj, next) {
