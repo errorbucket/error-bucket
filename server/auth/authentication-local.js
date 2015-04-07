@@ -3,6 +3,7 @@
 // This file acts as an example
 
 var _ = require('lodash');
+var md5 = require('blueimp-md5').md5;
 
 var config = require('../../config/config');
 
@@ -13,7 +14,7 @@ if (enabled) {
 
     var strategy = require('passport-local').Strategy;
     var strategyName = 'local';
-    var users = method.users || [{ username: 'admin', password: '21232f297a57a5a743894a0e4a801fc3' }]; // admin
+    var users = method.users || [{ username: 'admin', password: 'admin' }]; // admin
 
     exports.strategyName = strategyName;
     exports.strategy = new strategy(function(username, password, done) {
@@ -30,7 +31,7 @@ if (enabled) {
 function validateUsernameAndPassword(users, username, password) {
     var valid = false;
     _.forEach(users, function(val) {
-        if (val.username === username && val.password === password) {
+        if (val.username === username && md5(val.password) === password) {
             valid = true;
             return false;
         }
