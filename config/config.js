@@ -22,7 +22,7 @@ config.authMethods = {};
 if (!config.auth) config.useAuth = false;
 else {
     var flag = false;
-    _.forEach(config.auth.methods, function(val, key) {
+    _.forEach(config.auth, function(val, key) {
         if (val.enabled === true) {
             flag = true;
             var mtd = {}; mtd[key] = val;
