@@ -32,4 +32,8 @@ else {
     config.useAuth = flag;
 }
 
+// if error alert is correctly configured
+config.useAlert = config.errorAlert && config.errorAlert.interval &&
+                  config.errorAlert.threshold && config.errorAlert.receipient;
+
 module.exports = config;
