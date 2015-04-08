@@ -45,6 +45,6 @@ app.get('/', ensureAuthenticated, redirectTo('/messages/'));
 
 ws.installHandlers(server, {prefix: '/ws'});
 
-if (config.useAlert) setInterval(errorAlert, config.errorAlert.interval);
+if (config.useAlert) setInterval(errorAlert, config.errorAlert.interval * 1000);
 
 module.exports = server;
