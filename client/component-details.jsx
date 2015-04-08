@@ -83,7 +83,7 @@ module.exports = React.createClass({
     renderTable: function() {
         var items = _.map(this.state.data, function(data) {
             return <ReportItem
-                key={ data.key }
+                key={ data.id }
                 type={ (this.props.type === 'message') ? 'browsers' : 'messages' }
                 data={ data }
                 timespan={ false } />;
@@ -119,7 +119,7 @@ module.exports = React.createClass({
         var report = Reports.get(this.props.type, {id: this.props.id});
 
         this.setState({
-            data: toArray(report).sort(sortByLatestReport)
+            data: _.clone(report).sort(sortByLatestReport)
         });
     },
     updateGraph: function() {
@@ -146,12 +146,6 @@ module.exports = React.createClass({
         return props.type === 'message';
     }
 });
-
-function toArray(object) {
-    return _.map(object, function(value, key) {
-        return _.extend(_.clone(value), {key: key});
-    });
-}
 
 function sortByLatestReport(a, b) {
     return b.latest - a.latest;

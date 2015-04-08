@@ -46,7 +46,7 @@ module.exports = React.createClass({
         }
     },
     _showDetails: function(data) {
-        var url = '/' + this.props.params.type + '/' + encodeURIComponent(encodeURIComponent(data.key)) + '/';
+        var url = '/' + this.props.params.type + '/' + data.id + '/';
         page.show(url, {details: data.title});
     },
     _hideDetails: function() {

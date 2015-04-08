@@ -25,7 +25,7 @@ module.exports = React.createClass({
 
         var items = _.map(this.state.index, function(data) {
             return <ReportItem
-                key={ data.key }
+                key={ data.id }
                 type={ this.props.type }
                 data={ data }
                 timespan={ {
@@ -134,9 +134,9 @@ module.exports = React.createClass({
 
 // TODO: These operations(addKey, sort, splice) needs to be moved to server side.
 function formatRawData(data) {
-    return _.map(data, addKey)
+    return _.clone(data)
         .sort(sortByCount)
-        .splice(0, ITEMS_PER_PAGE);
+        .slice(0, ITEMS_PER_PAGE);
 }
 
 function getEarliest(memo, item) {
@@ -184,7 +184,7 @@ function addKey(value, key) {
 
 function addCurrentIndex(index, item) {
     return _.extend(item, {
-        _index: _.findIndex(index, {key: item.key})
+        _index: _.findIndex(index, {id: item.id})
     });
 }
 

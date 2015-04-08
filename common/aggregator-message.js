@@ -2,6 +2,7 @@ var aggregate = require('./aggregate');
 var reduceTimestamps = require('./reduce-timestamps');
 var getBrowserName = require('./browser-name');
 var getMessageSignature = require('./message-signature');
+var sha = require('./sha-hash');
 
 module.exports = function(params) {
     return aggregate({
@@ -15,7 +16,8 @@ module.exports = function(params) {
                 count: 0,
                 stack: item.stack,
                 line: item.line,
-                url: item.url
+                url: item.url,
+                id: sha(getBrowserName(item))
             };
         },
         each: function(obj, next) {

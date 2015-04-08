@@ -10,7 +10,8 @@ module.exports = function() {
             return {
                 title: item.message,
                 count: 0,
-                browsers: []
+                browsers: [],
+                id: getMessageSignature(item)
             };
         },
         each: function(obj, next) {

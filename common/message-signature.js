@@ -1,7 +1,9 @@
+var sha = require('./sha-hash');
+
 module.exports = function(data) {
-    return JSON.stringify({
+    return sha(JSON.stringify({
         message: data.message,
         line: data.line,
         url: data.url
-    });
+    }));
 };
