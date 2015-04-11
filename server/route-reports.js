@@ -12,7 +12,7 @@ module.exports = function(req, res) {
             if (err) {
                 res.status(400).json({ error: err });
             } else {
-                if (type === 'hourly') { // special treatment to graph data
+                if (type === 'graph') { // special treatment to graph data
                     res.json(_.reduce(docs, aggregator(req.query), {}));
                 } else {
                     res.json(_.toArray(_.reduce(docs, aggregator(req.query), {})));

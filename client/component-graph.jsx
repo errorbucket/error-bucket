@@ -4,7 +4,6 @@ var moment = require('moment');
 
 var GraphMixin = require('./mixin-graph');
 
-var HOUR = 60 * 60 * 1000;
 var Y_CAP = 0.9;
 
 module.exports = React.createClass({
@@ -72,7 +71,7 @@ module.exports = React.createClass({
         var points = [];
         var max = 0;
 
-        for (var t = this.props.from; t <= this.props.to; t += HOUR) {
+        for (var t = this.props.from; t <= this.props.to; t += this.props.span) {
             var count = 0;
 
             if (data[t]) {
