@@ -51,12 +51,13 @@ module.exports = React.createClass({
                         <input type="submit" label="Login"/>
                     </div>
                 </form>
-                <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-md5/1.1.0/js/md5.min.js"></script>
+                <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
+                <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha1-min.js"></script>
                 <script dangerouslySetInnerHTML={{
         __html: '(function(){ ' +
         'document.querySelector("#login-form input[type=\'submit\']").onclick=function(){' +
             'var a = document.querySelector("#login-form input[type=\'password\']");' +
-            'a.value = md5(a.value);' +
+            'a.value = CryptoJS.SHA1(a.value);' +
             'document.getElementById("login-form").submit();'+
         '};})();'
             }}></script>
