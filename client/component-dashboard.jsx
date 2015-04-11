@@ -1,4 +1,5 @@
 var React = require('react');
+var _ = require('lodash');
 
 var Reports = require('./reports');
 var Graph = require('./component-graph.jsx');
@@ -9,7 +10,7 @@ var FOUR_DAYS = 4 * 24 * 60 * 60 * 1000;
 module.exports = React.createClass({
     getInitialState: function() {
         return {
-            from: Math.floor( (Date.now() - FOUR_DAYS) / span) * span, // four days ago
+            from: fourDaysAgo(),
             to: Date.now(),
             data: {}
         };
@@ -29,19 +30,27 @@ module.exports = React.createClass({
     componentWillUnmount: function() {
         clearInterval(this._interval);
     },
+    shouldComponentUpdate: function(nextProps, nextState) {
+        return !_.isEqual(nextState.data, this.state.data);
+    },
     fetchGraphData: function() {
-        Reports.fetch('graph', this._getReportParams()).done(this.updateGraphData);
-    },
-    updateGraphData: function() {
         this.setState({
-            data: Reports.get('graph', this._getReportParams())
+            from: fourDaysAgo(),
+            to: Date.now()
         });
-    },
-    _getReportParams: function() {
-        return {
+        Reports.fetch('graph', {
             from: this.state.from,
             to: this.state.to,
             span: span
-        };
+        }, true).done(this.updateGraphData);
     },
+    updateGraphData: function(items) {
+        this.setState({
+            data: items
+        });
+    }
 });
+
+function fourDaysAgo() {
+    return Math.floor( (Date.now() - FOUR_DAYS) / span) * span;
+}
