@@ -1,12 +1,10 @@
-var moment = require('moment');
-
 var aggregate = require('./aggregate');
 var getMessageSignature = require('./message-signature');
 
 module.exports = function(params) {
     return aggregate({
         groupBy: function(item) {
-            return moment(item.timestamp).startOf('hour').valueOf();
+            return Math.floor(item.timestamp / params.span) * params.span;
         },
         filter: function(item) {
             var isMatchingTime = item.timestamp >= params.from && item.timestamp <= params.to;

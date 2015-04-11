@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var React = require('react/addons');
-var moment = require('moment');
 
 var cx = React.addons.classSet;
 
@@ -8,6 +7,9 @@ var Reports = require('./reports');
 var Stack = require('./component-stack.jsx');
 var Graph = require('./component-graph.jsx');
 var ReportItem = require('./component-report-item.jsx');
+
+var graphUnitTimeSpan = 60 * 60 * 1000; // one
+var FOUR_DAYS = 4 * 24 * 60 * 60 * 1000;
 
 module.exports = React.createClass({
     getInitialState: function() {
@@ -18,7 +20,7 @@ module.exports = React.createClass({
 
         if (this.hasGraph(this.props)) {
             state.graphData = {};
-            state.from = moment().startOf('hour').subtract(4, 'days').valueOf();
+            state.from =  Math.floor( (Date.now() - FOUR_DAYS) / graphUnitTimeSpan) * graphUnitTimeSpan; // four days ago
             state.to = Date.now();
         }
 
@@ -76,7 +78,8 @@ module.exports = React.createClass({
                     data={ this.state.graphData }
                     from={ this.state.from }
                     to={ this.state.to }
-                    height={ 200 } />
+                    height={ 200 }
+                    span = { graphUnitTimeSpan } />
             </div>
         }
     },
@@ -124,10 +127,11 @@ module.exports = React.createClass({
     },
     updateGraph: function() {
         this.setState({
-            graphData: Reports.get('hourly', {
+            graphData: Reports.get('graph', {
                 from: this.state.from,
                 to: this.state.to,
-                message: this.props.id
+                message: this.props.id,
+                span: graphUnitTimeSpan
             })
         });
     },
@@ -135,10 +139,11 @@ module.exports = React.createClass({
         Reports.fetch(props.type, {id: props.id}).done(this.updateData);
 
         if (this.hasGraph(props)) {
-            Reports.fetch('hourly', {
+            Reports.fetch('graph', {
                 from: this.state.from,
                 to: this.state.to,
-                message: props.id
+                message: props.id,
+                span: graphUnitTimeSpan
             }).done(this.updateGraph);
         }
     },
