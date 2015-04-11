@@ -9,7 +9,6 @@ var ws = require('./websockets');
 var serveStaticFile = require('./middleware-static-file');
 var redirectTo = require('./redirect-to');
 var setupAuthentication = require('./auth/setup-authentication');
-var errorAlert = require('./error-alert');
 
 var config = require('../config/config');
 
@@ -45,6 +44,9 @@ app.get('/', ensureAuthenticated, redirectTo('/messages/'));
 
 ws.installHandlers(server, {prefix: '/ws'});
 
-if (config.useAlert) setInterval(errorAlert, config.errorAlert.interval * 1000);
+if (config.useAlert) {
+    var errorAlert = require('./error-alert');
+    setInterval(errorAlert, config.errorAlert.interval * 1000);
+}
 
 module.exports = server;
