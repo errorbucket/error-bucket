@@ -23,11 +23,14 @@ module.exports = React.createClass({
         </div>;
     },
     componentDidMount: function() {
-        this._interval = setInterval(this.forceUpdate.bind(this), span);
-        Reports.fetch('graph', this._getReportParams()).done(this.updateGraphData);
+        this.fetchGraphData();
+        this._interval = setInterval(this.fetchGraphData, span);
     },
     componentWillUnmount: function() {
         clearInterval(this._interval);
+    },
+    fetchGraphData: function() {
+        Reports.fetch('graph', this._getReportParams()).done(this.updateGraphData);
     },
     updateGraphData: function() {
         this.setState({
