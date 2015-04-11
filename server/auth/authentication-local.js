@@ -3,7 +3,7 @@
 // This file acts as an example
 
 var _ = require('lodash');
-var md5 = require('blueimp-md5').md5;
+var sha = require('../../common/sha-hash');
 
 var config = require('../../config/config');
 
@@ -31,7 +31,7 @@ if (enabled) {
 function validateUsernameAndPassword(users, username, password) {
     var valid = false;
     _.forEach(users, function(val) {
-        if (val.username === username && md5(val.password) === password) {
+        if (val.username === username && sha(val.password) === password) {
             valid = true;
             return false;
         }
