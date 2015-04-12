@@ -22,7 +22,7 @@ var getParams = function(key) {
 };
 
 module.exports = {
-    fetch: function(type, params) {
+    fetch: function(type, params, volatile) {
         var key = getKey(params);
         var deferred = vow.defer();
 
@@ -30,7 +30,7 @@ module.exports = {
             _reports[type] = {};
         }
 
-        if (_reports[type][key]) {
+        if (_reports[type][key] && !volatile) {
             deferred.resolve(_reports[type][key]);
         } else {
             request
@@ -39,7 +39,8 @@ module.exports = {
                 .set('Accept', 'application/json')
                 .end(function(res) {
                     if (res.ok) {
-                        deferred.resolve(_reports[type][key] = res.body);
+                        if (!volatile) _reports[type][key] = res.body;
+                        deferred.resolve(res.body);
                     } else {
                         deferred.reject(res.text);
                     }
