@@ -34,6 +34,6 @@ else {
 
 // if error alert is correctly configured
 config.useAlert = config.errorAlert && config.errorAlert.interval &&
-                  config.errorAlert.threshold && config.errorAlert.receipient;
+                  config.errorAlert.threshold && config.errorAlert.recipient;
 
 module.exports = config;
