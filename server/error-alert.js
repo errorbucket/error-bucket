@@ -4,11 +4,23 @@ var moment = require('moment');
 var fs = require('fs');
 var path = require('path');
 
+var sampleTemplateFile = path.resolve('./config/template-alert.sample.ejs');
+var templateFile = path.resolve('./config/template-alert.ejs');
+var template;
+
+try {
+    template = fs.readFileSync(templateFile);
+} catch (err) {
+    template = fs.readFileSync(sampleTemplateFile);
+    fs.writeFile(templateFile, template, function (err) {
+        err && console.log(err);
+    });
+}
+
 var db = require('./database');
 var config = require('../config/config');
 var messageAggregator = require('../common/aggregator-messages');
 var pageAggregator = require('../common/aggregator-pages');
-var template = fs.readFileSync(path.resolve('./server/template-alert.ejs'));
 
 var TIME_INTERVAL = config.errorAlert.interval;
 var THRESHOLD = config.errorAlert.threshold;
