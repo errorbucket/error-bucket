@@ -25,5 +25,5 @@ module.exports = function() {
 };
 
 function getTitlePage(data) {
-    return data.referer || 'No referer';
+    return data.referer? data.referer.toString() : 'No referer';
 }
