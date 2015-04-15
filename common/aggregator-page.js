@@ -9,7 +9,7 @@ module.exports = function(params) {
     return aggregate({
         groupBy: 'message',
         filter: function(item) {
-            var referer = item.referer && sha(item.referer);
+            var referer = item.referer && sha(item.referer.toString());
 
             return referer === params.id ||
                 (params.id === NO_REFERER && !referer);
