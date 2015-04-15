@@ -53,7 +53,8 @@ module.exports = function () {
                 pages: top10pages
             });
             // mailx must be preinstalled on the server
-            var cmd = 'echo "' + msg + '" | mail -s "' + subject + '" ' + recipient.join(' ');
+            // the '-r' parameter is platform relevant. It cannot be used under OSX
+            var cmd = 'echo "' + msg + '" | mail -r "ErrorTracker<et@baixing.com>" -s "' + subject + '" ' + recipient.join(' ');
             exec(cmd);
         }
     });
