@@ -1,5 +1,24 @@
-Error Alert:
-Number of exceptions exceeded threshold(<%- thresh %>) at <%- timestamp %>.
-Totally <%- count %> errors occurred during the past period(<%- interval %>).
+#Error Alert:
+
+Number of exceptions exceeded threshold (<%- thresh %>) at <%- timestamp %>.
+Totally <%- count %> errors occurred during the past period (<%- interval %> seconds).
+
+# Top 10 Exceptions:
+<%
+_.forEach(messages, function(msg, idx) {
+%>
+<%- idx+1 %>. <%- msg.title %> [count: <%- msg.count %>] [in browsers: <%- msg.browsers %>]
+<%
+});
+%>
+
+# Top 10 Errored Pages:
+<%
+_.forEach(pages, function(page, idx) {
+%>
+<%- idx+1 %>. <%- page.title %>  [count: <%- page.count %>]
+<%
+});
+%>
 
 Please visit <%- url %> for more information.

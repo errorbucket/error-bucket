@@ -45,6 +45,7 @@ app.get('/', ensureAuthenticated, redirectTo('/messages/'));
 ws.installHandlers(server, {prefix: '/ws'});
 
 if (config.useAlert) {
+    console.log('Email alert has been correctly configured and activated.');
     var errorAlert = require('./error-alert');
     setInterval(errorAlert, config.errorAlert.interval * 1000);
 }
