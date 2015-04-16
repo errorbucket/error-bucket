@@ -54,7 +54,8 @@ module.exports = function () {
             });
             // mailx must be preinstalled on the server
             // the '-r' parameter is platform relevant. It cannot be used under OSX
-            var cmd = 'echo "' + msg + '" | mail -r "ErrorTracker<et@baixing.com>" -s "' + subject + '" ' + recipient.join(' ');
+            var r = process.platform == 'linux' ? '-r "ErrorTracker<et@baixing.com>"' : '';
+            var cmd = 'echo "' + msg + '" | mail ' + r + ' -s "' + subject + '" ' + recipient.join(' ');
             exec(cmd);
         }
     });
