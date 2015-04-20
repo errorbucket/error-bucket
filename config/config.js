@@ -36,4 +36,8 @@ else {
 config.useAlert = config.errorAlert && config.errorAlert.interval &&
                   config.errorAlert.threshold && config.errorAlert.recipient;
 
+// if keep latest is correctly configured
+config.useClearOutdated = config.clearOutdated && config.clearOutdated.frequency &&
+                          config.clearOutdated.timespan;
+
 module.exports = config;
