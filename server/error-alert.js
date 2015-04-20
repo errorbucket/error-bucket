@@ -3,9 +3,11 @@ var exec = require('child_process').exec;
 var moment = require('moment');
 var fs = require('fs');
 var path = require('path');
+var tmp = require('tmp');
 
 var sampleTemplateFile = path.resolve('./config/template-alert.sample.ejs');
 var templateFile = path.resolve('./config/template-alert.ejs');
+var sendMail = path.resolve('./send_mail.sh');
 var template;
 
 try {
@@ -42,7 +44,6 @@ module.exports = function () {
             var top10pages = _.toArray(_.reduce(docs, pageAggregator({type: 'pages'}), {}))
                 .sort(sortByCount).slice(0, 10);
             var timestamp = moment(NOW).format('YYYY-MM-DD HH:mm:SSS Z');
-            var subject = "[ErrorTracker] Error Alert " + timestamp;
             var msg = (_.template(template))({
                 thresh: THRESHOLD,
                 timestamp: timestamp,
@@ -52,11 +53,19 @@ module.exports = function () {
                 messages: top10msgs,
                 pages: top10pages
             });
-            // mailx must be preinstalled on the server
-            // the '-r' parameter is platform relevant. It cannot be used under OSX
-            var r = process.platform == 'linux' ? '-r "ErrorTracker<et@baixing.com>"' : '';
-            var cmd = 'echo "' + msg + '" | mail ' + r + ' -s "' + subject + '" ' + recipient.join(' ');
-            exec(cmd);
+            tmp.file(function(err, path) {
+                if (err) return;
+                fs.writeFile(path, msg, function(err) {
+                    // Postfix must be enabled and mutt must be installed
+                    var subject = "[ErrorTracker] Error Alert " + timestamp;
+                    var options = ['"html"', '"ErrorTracker<et@baixing.com>"', '"'+subject+'"', '"'+path+'"']
+                    var cmd = 'sh '+ sendMail + ' ' + options.join(' ') + ' ' + '"'+recipient.join('","')+'"';
+                    exec(cmd, function(err){
+                        if (err) console.log(err);
+                        else console.log('Alert sent.');
+                    });
+                });
+            });
         }
     });
 };
