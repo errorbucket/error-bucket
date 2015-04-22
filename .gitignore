@@ -6,3 +6,4 @@
 /client/public/.app.js
 /data/**
 /config/config.json
+/config/template-alert.ejs

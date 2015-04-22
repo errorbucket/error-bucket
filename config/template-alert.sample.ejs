@@ -1,0 +1,30 @@
+<h1>Error Alert</h1>
+
+<p>Number of exceptions exceeded threshold (<%- thresh %>) at <%- timestamp %>.</p>
+<p>Totally <%- count %> errors occurred during the past period (<%- interval %> seconds).</p>
+
+<h1>Top 10 Exceptions</h1>
+<ol>
+<%
+_.forEach(messages, function(msg) {
+%>
+<li>count: <%- msg.count %> <strong><%- msg.title %></strong> <small><em>in browsers: <%- msg.browsers %></em></small></li>
+<%
+});
+%>
+</ol>
+
+<h1>Top 10 Paths Leading to Errors</h1>
+<ol>
+  <%
+  _.forEach(pages, function(page) {
+  %>
+  <li>count: <%- page.count %> <strong><%- page.title %></strong></li>
+  <%
+  });
+  %>
+</ol>
+
+<hr/>
+
+<p>Please visit <a href="<%- url %>"><%- url %></a> for more information.</p>
