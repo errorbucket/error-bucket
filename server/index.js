@@ -55,7 +55,7 @@ if (config.useClearOutdated) {
     var freq = config.clearOutdated.frequency * 1000;
     var clearLogs = require('./clear-logs')(span);
     setInterval(clearLogs, freq);
-    console.log('Only logs recorded in the past', span, 'seconds will be preserved.');
+    console.log('Only logs recorded in the past', span/1000, 'seconds will be preserved.');
 }
 
 module.exports = server;

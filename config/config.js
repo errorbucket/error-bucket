@@ -38,6 +38,6 @@ config.useAlert = config.errorAlert && config.errorAlert.interval &&
 
 // if keep latest is correctly configured
 config.useClearOutdated = config.clearOutdated && config.clearOutdated.frequency &&
-                          config.clearOutdated.timespan;
+    (config.clearOutdated.timespan == 0 || config.clearOutdated.timespan);
 
 module.exports = config;
