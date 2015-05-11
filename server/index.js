@@ -10,7 +10,7 @@ var serveStaticFile = require('./middleware-static-file');
 var redirectTo = require('./redirect-to');
 var setupAuthentication = require('./auth/setup-authentication');
 
-var config = require('../config/config');
+var config = require('./config');
 
 var app = express();
 var server = http.createServer(app);
@@ -43,19 +43,5 @@ app.get('/:type/:id?', ensureAuthenticated, require('./route-index'));
 app.get('/', ensureAuthenticated, redirectTo('/messages/'));
 
 ws.installHandlers(server, {prefix: '/ws'});
-
-if (config.useAlert) {
-    console.log('Email alert has been correctly configured and activated.');
-    var errorAlert = require('./error-alert');
-    setInterval(errorAlert, config.errorAlert.interval * 1000);
-}
-
-if (config.useClearOutdated) {
-    var span = config.clearOutdated.timespan * 1000;
-    var freq = config.clearOutdated.frequency * 1000;
-    var clearLogs = require('./clear-logs')(span);
-    setInterval(clearLogs, freq);
-    console.log('Only logs recorded in the past', span/1000, 'seconds will be preserved.');
-}
 
 module.exports = server;
