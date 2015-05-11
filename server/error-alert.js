@@ -20,7 +20,7 @@ try {
 }
 
 var db = require('./database');
-var config = require('../config/config');
+var config = require('./config');
 var messageAggregator = require('../common/aggregator-messages');
 var pageAggregator = require('../common/aggregator-pages');
 

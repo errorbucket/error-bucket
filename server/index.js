@@ -10,7 +10,7 @@ var serveStaticFile = require('./middleware-static-file');
 var redirectTo = require('./redirect-to');
 var setupAuthentication = require('./auth/setup-authentication');
 
-var config = require('../config/config');
+var config = require('./config');
 
 var app = express();
 var server = http.createServer(app);

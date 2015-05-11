@@ -5,7 +5,7 @@
 
 var _ = require('lodash');
 
-var config = require('../../config/config');
+var config = require('../config');
 var validateEmail = require('./validate-email');
 
 var enabled = config.useAuth && _.contains(Object.keys(config.authMethods), 'google');
