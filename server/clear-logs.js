@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs-extra');
 var moment = require('moment');
 
-var config = require('../config');
+var config = require('../config/config');
 var db = require('./database');
 
 var dbpath = path.join(__dirname, '..', config.dbfile);
