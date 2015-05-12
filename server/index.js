@@ -32,7 +32,7 @@ app.get('/error', require('./module-logger'));
 app.use(ensureAuthenticated);
 app.get('/reports/:type', require('./route-reports'));
 app.get('/:type/:id?', require('./route-index'));
-app.get('/', redirectTo('/messages/'));
+app.get('/', redirectTo('/dashboard/'));
 
 ws.installHandlers(server, {prefix: '/ws'});
 
