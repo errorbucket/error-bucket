@@ -1,7 +1,7 @@
 var path = require('path');
 var NeDB = require('nedb');
 
-var config = require('../config');
+var config = require('./config');
 var db = new NeDB({
     filename: path.join(__dirname, '..', config.dbfile),
     autoload: true

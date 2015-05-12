@@ -2,7 +2,7 @@ var _ = require('lodash');
 var React = require('react');
 var Login = require('../client/component-login.jsx');
 var login = React.createFactory(Login);
-var config = require('../config');
+var config = require('./config');
 
 module.exports = function (req, res) {
 
