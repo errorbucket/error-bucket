@@ -4,7 +4,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 
-var config = require('../config');
+var config = require('../../config');
 
 // cookie key used to indicate logged in status
 // set the key in config.json.

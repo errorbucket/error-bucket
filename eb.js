@@ -1,6 +1,6 @@
 require('./server/require-jsx')();
 
-var config = require('./server/config');
+var config = require('./config');
 var server = require('./server');
 
 if (config.useAlert) {

@@ -1,7 +1,7 @@
 var React = require('react');
 var App = require('../client/component-app.jsx');
 var app = React.createFactory(App);
-var config = require('./config');
+var config = require('../config');
 
 module.exports = function(req, res) {
     var props = {
