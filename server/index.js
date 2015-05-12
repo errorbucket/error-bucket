@@ -9,7 +9,7 @@ var ws = require('./websockets');
 var serveStaticFile = require('./middleware-static-file');
 var redirectTo = require('./redirect-to');
 
-var config = require('../config');
+var config = require('../config/config');
 
 var app = express();
 var ensureAuthenticated = require('./auth/ensure-authenticated')(app);

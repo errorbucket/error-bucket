@@ -4,7 +4,7 @@
 var _ = require('lodash');
 var request = require('superagent');
 
-var config = require('../../config');
+var config = require('../../config/config');
 
 var enabled = config.useAuth && _.contains(Object.keys(config.authMethods), 'github');
 
