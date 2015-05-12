@@ -1,44 +1,10 @@
 require('./server/require-jsx')();
 
-var r = require('rethinkdb');
-
 var config = require('./server/config');
 var server = require('./server');
+var dbConn = require('./server/database-connection');
 
-var TABLE_NAME = 'logs';
-var INDEX_NAME = 'timestamp';
-
-/*
- * Create tables/indexes then start express
- */
-r.connect(config.rethinkdb, function(err, conn) {
-    if (err) {
-        console.log('Could not open a connection to initialize the database');
-        console.log(err.message);
-        process.exit(1);
-    }
-
-    r.table(TABLE_NAME).indexWait(INDEX_NAME).run(conn).then(function(){
-        conn.close();
-        start();
-    }).error(function() {
-        console.log('Setting up database...');
-        // The database/table/index was not available, create them
-        r.dbCreate(config.rethinkdb.db).run(conn).then(function() {
-            return r.tableCreate(TABLE_NAME).run(conn);
-        }).then(function() {
-            return r.table(TABLE_NAME).indexCreate(INDEX_NAME).run(conn);
-        }).then(function() {
-            return r.table(TABLE_NAME).indexWait(INDEX_NAME).run(conn);
-        }).then(start).error(function(err) {
-            console.log('Database Setup failed.\n' +
-                'This issue may be caused by the pre-existence of a wrongly configured instance of `%s`.\n' +
-                'Please try manually removing the instance in admin console.', config.rethinkdb.db);
-            console.log(err);
-            process.exit(1);
-        }).finally(conn.close);
-    });
-});
+dbConn.initialize(start);
 
 function start() {
     console.log('Table and index are available, starting...');

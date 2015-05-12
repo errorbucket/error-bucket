@@ -37,7 +37,7 @@ app.use(function(req, res, next) {
         return res.status(500).send(err.message);
     }
 
-    r.table('logs').insert(doc).run(req._dbconn).then(function(result) {
+    dbConn.insert(doc, req._dbconn, function(result) {
         if (result.inserted !== 1)
             return errorHandler(new Error("Log was not inserted."));
         try {
@@ -45,7 +45,7 @@ app.use(function(req, res, next) {
             ws.broadcast(JSON.stringify(doc));
         } catch(e) {}
         res.end();
-    }).error(errorHandler).finally(next);
+    }, errorHandler, next);
 });
 app.use(dbConn.close);
 
