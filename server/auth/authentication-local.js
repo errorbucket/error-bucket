@@ -5,7 +5,7 @@
 var _ = require('lodash');
 var sha = require('../../common/sha-hash');
 
-var config = require('../config');
+var config = require('../../config');
 
 var enabled = config.useAuth && _.contains(Object.keys(config.authMethods), 'local');
 
