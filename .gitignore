@@ -7,3 +7,5 @@
 /data/**
 /config/config.json
 /config/template-alert.ejs
+
+/rethinkdb_data
