@@ -5,7 +5,7 @@ var aggregators = require('../common/aggregators');
 
 var NUM_OF_ITEMS = 100;
 
-module.exports = function (req, res) {
+module.exports = function (req, res, next) {
     var type = req.params.type;
     var aggregator = aggregators[type];
 
@@ -27,4 +27,5 @@ module.exports = function (req, res) {
     } else {
         res.status(400).end();
     }
+    next(); // TODO: Move to the right place
 };
