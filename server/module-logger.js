@@ -4,9 +4,9 @@ var moment = require('moment');
 
 var db = require('./database');
 var ws = require('./websockets');
-var app = express();
+var router = express.Router();
 
-app.use(function(req, res) {
+router.get('/', function(req, res, next) {
     var query = req.query;
 
     if (!query.message || !query.url) {
@@ -44,4 +44,4 @@ app.use(function(req, res) {
     });
 });
 
-module.exports = app;
+module.exports = router;
