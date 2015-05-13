@@ -52,22 +52,20 @@ var dbConn = {
             }).error(function() {
                 console.log('Setting up database...');
                 // The database/table/index was not available, create them
-                r.dbCreate(dbConn.DATABASE_NAME).run(conn).then(function() {
+                r.dbCreate(dbConn.DATABASE_NAME).run(conn).finally(function() {
                     return r.tableCreate(dbConn.TABLE_NAME).run(conn);
-                }).then(function() {
+                }).finally(function() {
                     return r.table(dbConn.TABLE_NAME).indexCreate(dbConn.INDEX_NAME).run(conn);
-                }).then(function() {
+                }).catch(function(){}).finally(function() {
                     return r.table(dbConn.TABLE_NAME).indexWait(dbConn.INDEX_NAME).run(conn);
                 }).then(successCallback).error(function(err) {
-                    console.log('Database Setup failed.\n' +
-                        'This issue may be caused by the pre-existence of a wrongly configured instance of `%s`.\n' +
-                        'Please try manually removing the instance in admin console.', dbConn.DATABASE_NAME);
-                    console.log(err);
+                    console.log('Could not wait for the completion of indexing.')
+                    console.log(err.message);
                     process.exit(1);
                 }).finally(conn.close);
             });
         }, function(err) {
-            console.log('Could not open a connection to initialize the database');
+            console.log('Could not open a connection to initialize the database.');
             console.log(err.message);
             process.exit(1);
         });
