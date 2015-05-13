@@ -5,10 +5,10 @@ var r = require('rethinkdb');
 
 var dbConn = require('./database-connection');
 var ws = require('./websockets');
-var app = express();
+var router = express.Router();
 
-app.use(dbConn.connect);
-app.use(function(req, res, next) {
+router.use(dbConn.connect);
+router.get('/', function(req, res, next) {
     var query = req.query;
 
     if (!query.message || !query.url) {
@@ -47,6 +47,6 @@ app.use(function(req, res, next) {
         res.end();
     }, errorHandler, next);
 });
-app.use(dbConn.close);
+router.use(dbConn.close);
 
-module.exports = app;
+module.exports = router;
