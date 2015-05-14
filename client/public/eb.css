@@ -476,3 +476,81 @@ html, body, .app, .container, .menu, .content {
         inset 0 -1px rgba(0, 0, 0, 0.03),
         inset 0 1px rgba(0, 0, 0, 0.03);
 }
+
+/* Login */
+
+.login-box {
+  width: 260px;
+  padding: 1em 2em;
+  margin: 4em auto;
+  background-color: white;
+}
+
+.login-box input,
+.login-box button,
+.login-item {
+  box-sizing: border-box;
+  width: 260px;
+  margin: 0.5em auto;
+}
+
+.login-box h1 {
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
+.login-local input {
+  line-height: 2.5em;
+  border: 1px solid #E0EBF1;
+  padding: 0 0.6em;
+  background-color: #F2F5F7;
+  font-size: 1em;
+}
+
+.login-local input:focus,
+.login-local input:hover {
+  outline: none;
+  border-color: #C7D6DE;
+  background-color: #ECF2F6;
+}
+
+.login-local button {
+  font-size: 1.3em;
+  line-height: 2em;
+  padding: 0 0.6em;
+  background-color: #70A0C3;
+  color: white;
+  border: none;
+}
+
+.login-local + .login-3rd:before {
+  content: "※";
+  display: block;
+  text-align: center;
+  padding: 1em;
+  color: #DDD;
+}
+
+.login-item {
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  border-radius: 0.3em;
+  font-size: 1.3em;
+  line-height: 2em;
+  opacity: 0.9;
+}
+
+.login-github {
+  background-color: #333;
+  color: #FFF;
+}
+
+.login-google {
+  background-color: #4B8DF9;
+  color: #FFF;
+}
+
+.login-item:hover {
+  opacity: 1;
+}

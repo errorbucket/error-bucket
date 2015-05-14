@@ -3,17 +3,15 @@ var _ = require('lodash');
 
 module.exports = React.createClass({
     render: function () {
-        return <div className='container'>
-            <div className='content'>
-                { this.renderError() }
-                { this.renderLocalMethod() }
-                <div>
-                    Login with:
-                </div>
-                <div>
-                    <ul>
-                        { this.renderMethods() }
-                    </ul>
+        return <div className="container">
+            <div className="content">
+                <div className="login-box">
+                    <h1>Error Board</h1>
+                    <div className="login-message">
+                        { this.renderError() }
+                    </div>
+                    { this.renderLocalMethod() }
+                    { this.renderMethods() }
                 </div>
             </div>
         </div>;
@@ -29,38 +27,38 @@ module.exports = React.createClass({
         _.forEach(this.props.authMethods, function (val) {
             if (val === 'local') return; // continue
             var href = '/auth/' + val;
+            var classNames = React.addons.classSet('login-item', 'login-' + val);
             methods.push(
-                <li key={ val }><a href={ href }>{ val }</a></li>
+                <a key={ val } className={ classNames } href={ href }>{ val }</a>
             );
         });
-        return methods;
+        return <div className="login-3rd">{ methods }</div>;
     },
     renderLocalMethod: function () {
         if (_.contains(this.props.authMethods, 'local')) {
-            return <div>
+            return <div className="login-local">
                 <form action="/auth/local" method="post" id="login-form">
                     <div>
-                        <label>Username:</label>
-                        <input type="text" name="username"/>
+                        <input type="text" name="username" placeholder="username" />
                     </div>
                     <div>
-                        <label>Password:</label>
-                        <input type="password" name="password"/>
+                        <input type="password" name="password" placeholder="password" />
                     </div>
                     <div>
-                        <input type="submit" label="Login"/>
+                        <button type="submit">✓</button>
                     </div>
                 </form>
                 <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
                 <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha1-min.js"></script>
                 <script dangerouslySetInnerHTML={{
-        __html: '(function(){ ' +
-        'document.querySelector("#login-form input[type=\'submit\']").onclick=function(){' +
-            'var a = document.querySelector("#login-form input[type=\'password\']");' +
-            'a.value = CryptoJS.SHA1(a.value);' +
-            'document.getElementById("login-form").submit();'+
-        '};})();'
-            }}></script>
+                    __html: '(function(){ ' +
+                    'document.querySelector("#login-form button").onclick=function(){' +
+                        'var a = document.querySelector("#login-form input[type=\'password\']");' +
+                        'a.value = CryptoJS.SHA1(a.value);' +
+                        'document.getElementById("login-form").submit();'+
+                    '};})();'
+                    }}>
+                </script>
             </div>
         }
     }
