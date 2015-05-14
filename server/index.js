@@ -7,12 +7,10 @@ var compression = require('compression');
 
 var ws = require('./websockets');
 var serveStaticFile = require('./middleware-static-file');
-var redirectTo = require('./redirect-to');
 
 var config = require('./config');
 
 var app = express();
-var ensureAuthenticated = require('./auth/ensure-authenticated')(app);
 var server = http.createServer(app);
 
 var publicPath = path.join(__dirname, '..', 'client/public');
@@ -27,12 +25,8 @@ app.use('/static', express.static(publicPath));
 // TODO: Remove.
 app.get('/fake', serveStaticFile(path.join(publicPath, 'fake.html')));
 
-app.get('/error', require('./module-logger'));
-
-app.use(ensureAuthenticated);
-app.get('/reports/:type', require('./route-reports'));
-app.get('/:type/:id?', require('./route-index'));
-app.get('/', redirectTo('/dashboard/'));
+app.use('/error', require('./module-logger'));
+app.use('/', require('./module-router'));
 
 ws.installHandlers(server, {prefix: '/ws'});
 

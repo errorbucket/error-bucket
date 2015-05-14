@@ -40,6 +40,7 @@
     "react": "0.12.x",
     "react-cookie": "^0.1.7",
     "react-tools": "^0.12.2",
+    "rethinkdb": "^2.0.0",
     "serve-favicon": "^2.0.0",
     "sockjs": "0.3.x",
     "superagent": "^0.21.0",
