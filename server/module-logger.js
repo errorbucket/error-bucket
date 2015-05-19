@@ -6,6 +6,16 @@ var db = require('./database');
 var ws = require('./websockets');
 var router = express.Router();
 
+var composeSHAFunc = require('./dbutils/compose-sha');
+var getMessageSignature = require('./dbutils/message-signature');
+var getBrowserSignature = composeSHAFunc(require('./dbutils/browser-name'));
+var getPageSignature = composeSHAFunc(function(data) {
+    return data.referer? data.referer.toString() : 'No referer';
+});
+var getScriptSignature = composeSHAFunc(function getTitleScript(data) {
+    return data.url + ':' + (data.line || 0);
+});
+
 router.use(db.connect);
 router.get('/', function(req, res, next) {
     var query = req.query;
@@ -30,6 +40,12 @@ router.get('/', function(req, res, next) {
         line: query.line,
         column: query.column,
         stack: query.stack
+    };
+    doc.hash = {
+        messageHash: getMessageSignature(doc),
+        scriptHash: getScriptSignature(doc),
+        pageHash: getPageSignature(doc),
+        browserHash: getBrowserSignature(doc)
     };
 
     db.insert(req._db, doc, function(err) {
