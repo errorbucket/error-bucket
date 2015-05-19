@@ -6,6 +6,7 @@ var db = require('./database');
 var ws = require('./websockets');
 var router = express.Router();
 
+router.use(db.connect);
 router.get('/', function(req, res, next) {
     var query = req.query;
 
@@ -31,9 +32,10 @@ router.get('/', function(req, res, next) {
         stack: query.stack
     };
 
-    db.insert(doc, function(err) {
+    db.insert(req._db, doc, function(err) {
         if (err) {
-            return res.status(500).end();
+            res.status(500).end();
+            return next();
         }
 
         try {
@@ -41,7 +43,9 @@ router.get('/', function(req, res, next) {
         } catch(e) {}
 
         res.end();
+        next();
     });
 });
+router.use(db.close);
 
 module.exports = router;
