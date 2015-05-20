@@ -6,7 +6,6 @@ module.exports = function(conn, query, callback) {
     db.aggregate(conn, [
         {$group: {
             _id: '$hash.pageHash',
-            id: {$first: '$hash.pageHash'},
             title: {$first: pageTitle},
             count: {$sum: 1},
             browsers: {$addToSet: '$ua.family'},

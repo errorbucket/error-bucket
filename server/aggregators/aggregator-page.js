@@ -5,7 +5,6 @@ module.exports = function(conn, query, callback) {
         {$match: {'hash.pageHash': {$eq: query.id}}},
         {$group: {
             _id: '$hash.messageHash',
-            id: {$first: '$hash.messageHash'},
             title: {$first: '$message'},
             count: {$sum: 1},
             browsers: {$addToSet: '$ua.family'},

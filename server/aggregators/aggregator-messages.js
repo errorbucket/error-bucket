@@ -8,8 +8,7 @@ module.exports = function(conn, query, callback) {
             browsers: {$addToSet: '$ua.family'},
             title: {$first: '$message'},
             earliest: {$min: '$timestamp'},
-            latest: {$max: '$timestamp'},
-            id: {$first: '$hash.messageHash'}
+            latest: {$max: '$timestamp'}
         }},
         {$sort: {count: -1}},
         {$limit: 100}

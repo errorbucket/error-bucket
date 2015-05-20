@@ -7,7 +7,6 @@ module.exports = function(conn, query, callback) {
             _id: '$hash.browserHash', //TODO: id and _id are duplicated
             title: {$first: browserName},
             count: {$sum: 1},
-            id: {$first: '$hash.browserHash'},
             earliest: {$min: '$timestamp'},
             latest: {$max: '$timestamp'}
         }},
