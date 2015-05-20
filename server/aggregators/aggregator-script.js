@@ -11,6 +11,7 @@ module.exports = function(conn, query, callback) {
             earliest: {$min: '$timestamp'},
             latest: {$max: '$timestamp'},
             browsers: {$addToSet: '$ua.family'}
-        }}
+        }},
+        {$sort: {count: -1}}
     ], callback);
 };
