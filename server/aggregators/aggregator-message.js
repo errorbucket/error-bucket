@@ -1,4 +1,5 @@
 var db = require('../database');
+var browserName = require('./browser-name');
 
 module.exports = function(conn, query, callback) {
     db.aggregate(conn, [
@@ -6,6 +7,7 @@ module.exports = function(conn, query, callback) {
         {$group: {
             _id: '$hash.browserHash',
             id: {$first: '$hash.browserHash'},
+            title: {$first: browserName},
             count: {$sum: 1},
             stack: {$first: '$stack'},
             line: {$first: '$line'},

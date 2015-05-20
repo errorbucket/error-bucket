@@ -1,7 +1,7 @@
 var sha = require('../../common/sha-hash');
 
 /**
- * @see aggregator-browsers.js
+ * @see aggregators/browser-name.js
  */
 module.exports = function(data) {
     var ua = data.ua;
