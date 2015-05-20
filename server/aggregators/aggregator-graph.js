@@ -5,7 +5,7 @@ module.exports = function(conn, query, callback) {
         $gte: Number(query.from),
         $lte: Number(query.to)
     }};
-    query.message || (match['hash.messageHash'] = {$eq: query.message});
+    query.message && (match['hash.messageHash'] = {$eq: query.message});
 
     db.aggregate(conn, [
         {$match: match},
