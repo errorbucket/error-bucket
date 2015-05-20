@@ -14,7 +14,6 @@ var db = {
      * The connection instance will be preserved in `req`
      */
     connect: function(req, res, next) {
-        console.log('connecting...');
         client.connect(url, function(err, db) {
             if (err) return res.status(500).end();
             req._db = db;
@@ -25,7 +24,6 @@ var db = {
      * Middleware for ending the MongoDB server connections
      */
     close: function(req, res, next) {
-        console.log('closing...');
         req._db && req._db.close();
         req._db = undefined;
     },

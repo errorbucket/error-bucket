@@ -1,29 +1,17 @@
-var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var reduceBrowsers = require('./reduce-browsers');
-var composeSHAFunc = require('./compose-sha');
 
-var getSHATitlePage = composeSHAFunc(getTitlePage);
-
-module.exports = function() {
-    return aggregate({
-        groupBy: getSHATitlePage,
-        create: function(item) {
-            return {
-                title: getTitlePage(item),
-                count: 0,
-                browsers: [],
-                id: getSHATitlePage(item)
-            };
-        },
-        each: function(obj, next) {
-            obj.count += 1;
-            reduceTimestamps(obj, next);
-            reduceBrowsers(obj, next);
-        }
-    });
+module.exports = function(db, query, callback) {
+    var pageTitle = {$ifNull: ['$referer', 'No referer']};
+    db.collection('logs').aggregate([
+        {$group: {
+            _id: '$hash.pageHash',
+            id: {$first: '$hash.pageHash'},
+            title: {$first: pageTitle},
+            count: {$sum: 1},
+            browsers: {$addToSet: '$ua.family'},
+            earliest: {$min: '$timestamp'},
+            latest: {$max: '$timestamp'}
+        }},
+        {$sort: {count: -1}},
+        {$limit: 100}
+    ], callback);
 };
-
-function getTitlePage(data) {
-    return data.referer? data.referer.toString() : 'No referer';
-}

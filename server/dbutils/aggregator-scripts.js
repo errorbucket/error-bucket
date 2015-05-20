@@ -1,29 +1,21 @@
-var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var reduceBrowsers = require('./reduce-browsers');
-var composeSHAFunc = require('./compose-sha');
 
-var getSHATitleScript = composeSHAFunc(getTitleScript);
-
-module.exports = function() {
-    return aggregate({
-        groupBy: getSHATitleScript,
-        create: function(item) {
-            return {
-                title: getTitleScript(item),
-                count: 0,
-                browsers: [],
-                id: getSHATitleScript(item)
-            };
-        },
-        each: function(obj, next) {
-            obj.count += 1;
-            reduceTimestamps(obj, next);
-            reduceBrowsers(obj, next);
-        }
-    });
+module.exports = function(db, query, callback) {
+    var scriptTitle = {$cond: {
+        if: {$ifNull: ['$line', false]},
+        then: {$concat: ['$url', ':', '$line']},
+        else: {$concat: ['$url', ':', '0']}
+    }};
+    db.collection('logs').aggregate([
+        {$group: {
+            _id: '$hash.scriptHash',
+            id: {$first: '$hash.scriptHash'},
+            title: {$first: scriptTitle},
+            count: {$sum: 1},
+            browsers: {$addToSet: '$ua.family'},
+            earliest: {$min: '$timestamp'},
+            latest: {$max: '$timestamp'},
+        }},
+        {$sort: {count: -1}},
+        {$limit: 100}
+    ], callback);
 };
-
-function getTitleScript(data) {
-    return data.url + ':' + (data.line || 0);
-}

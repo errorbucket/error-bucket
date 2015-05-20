@@ -1,28 +1,17 @@
-var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var getBrowserName = require('./browser-name');
-var getMessageSignature = require('./message-signature');
-var sha = require('./sha-hash');
 
-module.exports = function(params) {
-    return aggregate({
-        groupBy: getBrowserName,
-        filter: function(item) {
-            return getMessageSignature(item) === params.id;
-        },
-        create: function(item) {
-            return {
-                title: getBrowserName(item),
-                count: 0,
-                stack: item.stack,
-                line: item.line,
-                url: item.url,
-                id: sha(getBrowserName(item))
-            };
-        },
-        each: function(obj, next) {
-            obj.count += 1;
-            reduceTimestamps(obj, next);
-        }
-    });
+module.exports = function(db, query, callback) {
+    db.collection('logs').aggregate([
+        {$match: {'hash.messageHash': {$eq: query.id}}},
+        {$group: {
+            _id: '$hash.browserHash',
+            id: {$first: '$hash.browserHash'},
+            count: {$sum: 1},
+            stack: {$first: '$stack'},
+            line: {$first: '$line'},
+            url: {$first: '$url'},
+            earliest: {$min: '$timestamp'},
+            latest: {$max: '$timestamp'}
+        }},
+        {$sort: {count: -1}}
+    ], callback);
 };
