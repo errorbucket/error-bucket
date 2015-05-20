@@ -6,9 +6,9 @@ var db = require('./database');
 var ws = require('./websockets');
 var router = express.Router();
 
-var composeSHAFunc = require('./dbutils/compose-sha');
-var getMessageSignature = require('./dbutils/message-signature');
-var getBrowserSignature = composeSHAFunc(require('./dbutils/browser-name'));
+var composeSHAFunc = require('./aggregators/compose-sha');
+var getMessageSignature = require('./aggregators/message-signature');
+var getBrowserSignature = composeSHAFunc(require('./aggregators/browser-name'));
 var getPageSignature = composeSHAFunc(function(data) {
     return data.referer? data.referer.toString() : 'No referer';
 });

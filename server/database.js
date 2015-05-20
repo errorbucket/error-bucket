@@ -35,6 +35,15 @@ var db = {
      */
     insert: function(db, doc, callback) {
         db.collection(this.COLLECTION_NAME).insertOne(doc, callback);
+    },
+    /**
+     * Helper method for aggregate queries
+     * @param db Connection instance
+     * @param pipe Aggregation pipeline
+     * @param callback Node style callback `function(err, result)`
+     */
+    aggregate: function(db, pipe, callback) {
+        db.collection(this.COLLECTION_NAME).aggregate(pipe, callback);
     }
 };
 

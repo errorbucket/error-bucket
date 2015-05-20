@@ -1,13 +1,13 @@
-var aggregate = require('./aggregate');
-var getMessageSignature = require('./message-signature');
+var db = require('../database');
 
-module.exports = function(db, query, callback) {
+module.exports = function(conn, query, callback) {
     var match = {'timestamp': {
         $gte: Number(query.from),
         $lte: Number(query.to)
     }};
     query.message || (match['hash.messageHash'] = {$eq: query.message});
-    db.collection('logs').aggregate([
+
+    db.aggregate(conn, [
         {$match: match},
         {$group: {
             //TODO: view refactor needed to display new graph

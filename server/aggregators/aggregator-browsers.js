@@ -1,5 +1,6 @@
+var db = require('../database');
 
-module.exports = function(db, query, callback) {
+module.exports = function(conn, query, callback) {
     var browserName = {$cond: {
         if: {$ifNull: ['$ua.family', false]},
         then: {$cond: {
@@ -13,7 +14,8 @@ module.exports = function(db, query, callback) {
         }},
         else: "Unknown"
     }};
-    db.collection('logs').aggregate([
+
+    db.aggregate(conn, [
         {$group: {
             _id: '$hash.browserHash', //TODO: id and _id are duplicated
             title: {$first: browserName},

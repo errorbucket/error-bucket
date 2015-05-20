@@ -1,6 +1,7 @@
+var db = require('../database');
 
-module.exports = function(db, query, callback) {
-    db.collection('logs').aggregate([
+module.exports = function(conn, query, callback) {
+    db.aggregate(conn, [
         {$match: {'hash.messageHash': {$eq: query.id}}},
         {$group: {
             _id: '$hash.browserHash',
