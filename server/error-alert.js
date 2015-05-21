@@ -37,35 +37,40 @@ module.exports = function () {
             {timestamp: {$lt: NOW}}
         ]
     }, function (err, docs) {
-        if (!err && docs.length > THRESHOLD) {
-            console.log('Too many exceptions occurred during the past', TIME_INTERVAL, 'seconds. Sending alert email...');
-            var top10msgs = _.toArray(_.reduce(docs, messageAggregator({type: 'messages'}), {}))
-                .sort(sortByCount).slice(0, 10);
-            var top10pages = _.toArray(_.reduce(docs, pageAggregator({type: 'pages'}), {}))
-                .sort(sortByCount).slice(0, 10);
-            var timestamp = moment(NOW).format('YYYY-MM-DD HH:mm:SSS Z');
-            var msg = (_.template(template))({
-                thresh: THRESHOLD,
-                timestamp: timestamp,
-                count: docs.length,
-                url: config.baseurl,
-                interval: TIME_INTERVAL,
-                messages: top10msgs,
-                pages: top10pages
-            });
-            tmp.file(function(err, path) {
-                if (err) return;
-                fs.writeFile(path, msg, function(err) {
-                    // Postfix must be enabled and mutt must be installed
-                    var subject = "[ErrorTracker] Error Alert " + timestamp;
-                    var options = ['"html"', '"ErrorTracker<et@baixing.com>"', '"'+subject+'"', '"'+path+'"']
-                    var cmd = 'sh '+ sendMail + ' ' + options.join(' ') + ' ' + '"'+recipient.join('","')+'"';
-                    exec(cmd, function(err){
-                        if (err) console.log(err);
-                        else console.log('Alert sent.');
+        if (err) {
+            console.error(err);
+        } else {
+            console.log('Ranger Report: %s Errors @ %s ', docs.length, NOW);
+            if (docs.length > THRESHOLD) {
+                console.log('Too many exceptions occurred during the past', TIME_INTERVAL, 'seconds. Sending alert email...');
+                var top10msgs = _.toArray(_.reduce(docs, messageAggregator({type: 'messages'}), {}))
+                    .sort(sortByCount).slice(0, 10);
+                var top10pages = _.toArray(_.reduce(docs, pageAggregator({type: 'pages'}), {}))
+                    .sort(sortByCount).slice(0, 10);
+                var timestamp = moment(NOW).format('YYYY-MM-DD HH:mm:SSS Z');
+                var msg = (_.template(template))({
+                    thresh: THRESHOLD,
+                    timestamp: timestamp,
+                    count: docs.length,
+                    url: config.baseurl,
+                    interval: TIME_INTERVAL,
+                    messages: top10msgs,
+                    pages: top10pages
+                });
+                tmp.file(function(err, path) {
+                    if (err) return;
+                    fs.writeFile(path, msg, function(err) {
+                        // Postfix must be enabled and mutt must be installed
+                        var subject = "[ErrorTracker] Error Alert " + timestamp;
+                        var options = ['"html"', '"ErrorTracker<et@baixing.com>"', '"'+subject+'"', '"'+path+'"']
+                        var cmd = 'sh '+ sendMail + ' ' + options.join(' ') + ' ' + '"'+recipient.join('","')+'"';
+                        exec(cmd, function(err){
+                            if (err) console.log(err);
+                            else console.log('Alert sent.');
+                        });
                     });
                 });
-            });
+            }
         }
     });
 };
