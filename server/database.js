@@ -1,14 +1,49 @@
 var client = require('mongodb').MongoClient;
 
-var url = require('./config').db;
+var config = require('./config');
+var url = config.db;
 
 var COLLECTION_NAME = 'logs';
+
+function connect(callback) {
+    client.connect(url, callback);
+}
 
 var db = {
     /**
      * Name of the collection used in the database to store logs
      */
     COLLECTION_NAME: COLLECTION_NAME,
+    /**
+     * Initialize database
+     * @param callback Node style callback `function(err, result)`
+     */
+    initialize: function(callback) {
+        connect(function(err, db) {
+            if (err) return callback(err, null);
+            var promises = [];
+            promises.push(new Promise(function (res, rej) {
+                db.collection(COLLECTION_NAME)
+                    .createIndex('timestamp', function (err) {
+                        if (err) return rej(err);
+                        res();
+                    })
+            }));
+            config.logttl && promises.push(new Promise(function (res, rej) {
+                db.collection(COLLECTION_NAME)
+                    .createIndex('createdAt', {
+                        expireAfterSeconds: config.logttl
+                    }, function (err) {
+                        if (err) return rej(err);
+                        console.log('Set log TTL to %s seconds', config.logttl);
+                        res();
+                    })
+            }));
+            Promise.all(promises)
+                .then(function() {callback(null);})
+                .catch(function(err) {callback(err, null);});
+        });
+    },
     /**
      * Middleware for MongoDB server connections
      * The connection instance will be preserved in `req`
@@ -34,7 +69,7 @@ var db = {
      * @param callback Node style callback `function(err, result)`
      */
     insert: function(db, doc, callback) {
-        db.collection(this.COLLECTION_NAME).insertOne(doc, callback);
+        db.collection(COLLECTION_NAME).insertOne(doc, callback);
     },
     /**
      * Helper method for aggregate queries
@@ -43,7 +78,7 @@ var db = {
      * @param callback Node style callback `function(err, result)`
      */
     aggregate: function(db, pipe, callback) {
-        db.collection(this.COLLECTION_NAME).aggregate(pipe, callback);
+        db.collection(COLLECTION_NAME).aggregate(pipe, callback);
     }
 };
 

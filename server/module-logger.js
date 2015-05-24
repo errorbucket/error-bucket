@@ -15,14 +15,15 @@ router.get('/', function(req, res, next) {
         return res.status(400).end();
     }
 
-    var timestamp = Date.now();
+    var date = new Date();
     var ua = useragent.parse(req.headers['user-agent']).toJSON();
     var referer = query.page || req.headers.referer;
 
     var doc = {
         ua: ua,
         referer: referer,
-        timestamp: timestamp,
+        timestamp: date.valueOf(),
+        createdAt: date,
 
         message: query.message,
         url: query.url,
