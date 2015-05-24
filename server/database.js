@@ -22,25 +22,43 @@ var db = {
         connect(function(err, db) {
             if (err) return callback(err, null);
             var promises = [];
+            var collection = db.collection(COLLECTION_NAME);
             promises.push(new Promise(function (res, rej) {
-                db.collection(COLLECTION_NAME)
+                collection
                     .createIndex('timestamp', function (err) {
                         if (err) return rej(err);
                         res();
-                    })
+                    });
             }));
             config.logttl && promises.push(new Promise(function (res, rej) {
-                db.collection(COLLECTION_NAME)
-                    .createIndex('createdAt', {
+                function createTTLIndex(callback) {
+                    collection.createIndex('createdAt', {
                         expireAfterSeconds: config.logttl
-                    }, function (err) {
-                        if (err) return rej(err);
-                        console.log('Set log TTL to %s seconds', config.logttl);
-                        res();
-                    })
+                    }, callback);
+                }
+                createTTLIndex(function (err) {
+                    console.log('Set log TTL to %s seconds...', config.logttl);
+                    if (err && err.code == 85) { // `createdAt_idx` exists but with different options
+                        console.log('Detected previously created TTL index with different options. Dropping...')
+                        return collection.dropIndex('createdAt_1', function(e) {
+                            if (e) return rej(e);
+                            console.log('Recreating TTL index...');
+                            createTTLIndex(function (err) {
+                                if (err) return rej(err);
+                                console.log('TTL index successfully recreated.');
+                                res();
+                            });
+                        });
+                    } else if (err) {
+                        return rej(err);
+                    }
+                    res();
+                });
             }));
             Promise.all(promises)
-                .then(function() {callback(null);})
+                .then(function() {
+                    callback(null);
+                })
                 .catch(function(err) {callback(err, null);});
         });
     },
