@@ -1,12 +1,16 @@
 var express = require('express');
 var useragent = require('useragent');
 var moment = require('moment');
+var isbot = require('is-bot');
 
 var db = require('./database');
 var ws = require('./websockets');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
+
+    if (isbot(req.headers['user-agent'])) return;
+
     var query = req.query;
 
     if (!query.message || !query.url) {
@@ -31,14 +35,14 @@ router.get('/', function(req, res, next) {
         stack: query.stack
     };
 
-    db.insert(doc, function(err) {
+    db.insert(doc, function (err) {
         if (err) {
             return res.status(500).end();
         }
 
         try {
             ws.broadcast(JSON.stringify(doc));
-        } catch(e) {}
+        } catch (e) {}
 
         res.end();
     });
