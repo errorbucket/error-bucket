@@ -1,5 +1,6 @@
 var express = require('express');
 var useragent = require('useragent');
+var isbot = require('is-bot');
 
 var db = require('./database');
 var ws = require('./websockets');
@@ -9,10 +10,12 @@ var signatures = require('./signatures');
 
 router.use(db.connect);
 router.get('/', function(req, res, next) {
+
     var query = req.query;
 
-    if (!query.message || !query.url) {
-        return res.status(400).end();
+    if (isbot(req.headers['user-agent']) || !query.message || !query.url) {
+        res.status(400).end();
+		return next();
     }
 
     var date = new Date();
@@ -46,7 +49,7 @@ router.get('/', function(req, res, next) {
 
         try {
             ws.broadcast(JSON.stringify(doc));
-        } catch(e) {}
+        } catch (e) {}
 
         res.end();
         next();
