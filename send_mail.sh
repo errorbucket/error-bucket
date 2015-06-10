@@ -10,7 +10,7 @@
 # @param array $recipients Email recipients.
 
 [[ ${#} -lt 5 ]] && exit 1
-hash mutt 2>/dev/null || { echo >&2 "mutt is not installed. Aborting..."; exit 1; }
+type mutt >/dev/null 2>&1 || { echo >&2 "mutt is not installed. Aborting."; exit 1; }
 
 content_type="${1}"
 from_address="${2}"

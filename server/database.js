@@ -15,6 +15,10 @@ var db = {
      */
     COLLECTION_NAME: COLLECTION_NAME,
     /**
+     * To provide native way of access
+     */
+    direct_connect: connect,
+    /**
      * Initialize database
      * @param callback Node style callback `function(err, result)`
      */
@@ -97,6 +101,15 @@ var db = {
      */
     aggregate: function(db, pipe, callback) {
         db.collection(COLLECTION_NAME).aggregate(pipe, callback);
+    },
+    /**
+     * Helper method for count
+     * @param db
+     * @param query
+     * @param callback
+     */
+    count: function(db, query, callback) {
+        db.collection(COLLECTION_NAME).count(query, {hint: 'timestamp'}, callback);
     }
 };
 
