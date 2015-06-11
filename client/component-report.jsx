@@ -104,7 +104,8 @@ module.exports = React.createClass({
             });
     },
     updateData: function() {
-        if (_.isEmpty(this.state.index)) {
+        //if (_.isEmpty(this.state.index)) {
+        if (this.state.index === null) {
             this.createIndex();
         } else {
             this.updateIndex();
@@ -112,13 +113,13 @@ module.exports = React.createClass({
     },
     createIndex: function() {
         var raw = Reports.get(this.props.type);
-        var index = _.clone(raw);
+        var index = _.cloneDeep(raw);
 
         this.setState(_.extend(this.getInitialState(), {index: index}));
     },
     updateIndex: function() {
         var raw = Reports.get(this.props.type);
-        var data = _.clone(raw);
+        var data = _.cloneDeep(raw);
 
         var addIndex = _.partial(addCurrentIndex, this.state.index);
         var addDelta = _.partial(countDelta, this.state.index);
