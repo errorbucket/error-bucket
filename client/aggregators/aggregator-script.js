@@ -1,27 +1,25 @@
 var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var getBrowserName = require('./browser-name');
-var composeSHAFunc = require('./compose-sha');
-var sha = require('./sha-hash');
-
-var getSHABrowserName = composeSHAFunc(getBrowserName);
+var reduceTimestamps = require('./helpers/reduce-timestamps');
+var reduceBrowsers = require('./helpers/reduce-browsers');
 
 module.exports = function(params) {
     return aggregate({
-        groupBy: 'message',
+        groupBy: 'messageHash',
         filter: function(item) {
-            return getSHABrowserName(item) === params.id;
+            return item.hash.scriptHash === params.id;
         },
         create: function(item) {
             return {
                 title: item.message,
                 count: 0,
-                id: sha(item.message)
+                browsers: [],
+                _id: item.hash.messageHash
             };
         },
         each: function(obj, next) {
             obj.count += 1;
             reduceTimestamps(obj, next);
+            reduceBrowsers(obj, next);
         }
     });
 };

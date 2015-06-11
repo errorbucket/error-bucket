@@ -1,18 +1,15 @@
 var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var getBrowserName = require('./browser-name');
-var composeSHAFunc = require('./compose-sha');
-
-var genSHABrowserName = composeSHAFunc(getBrowserName);
+var reduceTimestamps = require('./helpers/reduce-timestamps');
+var getBrowserName = require('./helpers/browser-name');
 
 module.exports = function() {
     return aggregate({
-        groupBy: genSHABrowserName,
+        groupBy: 'browserHash',
         create: function(item) {
             return {
                 title: getBrowserName(item),
                 count: 0,
-                id: genSHABrowserName(item)
+                _id: item.hash.browserHash
             };
         },
         each: function(obj, next) {

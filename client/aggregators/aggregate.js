@@ -1,8 +1,8 @@
 var _ = require('lodash');
 
-var prop = function(name) {
+var hashProp = function(name) {
     return function(obj) {
-        return obj[name];
+        return obj['hash'][name];
     };
 };
 
@@ -20,7 +20,7 @@ module.exports = function(params) {
     var filter = params.filter || value(true);
 
     if (_.isString(params.groupBy)) {
-        params.groupBy = prop(params.groupBy);
+        params.groupBy = hashProp(params.groupBy);
     }
 
     if (!_.isFunction(params.create)) {
@@ -29,11 +29,14 @@ module.exports = function(params) {
 
     return function(dataset, next) {
         if (filter(next)) {
-            var groupName = params.groupBy(next);
-            var item = dataset[groupName];
-
-            if (!item) {
-                item = dataset[groupName] = params.create(next);
+            var group = params.groupBy(next);
+            var groupIndex = _.findIndex(dataset, {_id: group});
+            var item = null;
+            if (groupIndex !== -1) {
+                item = dataset[groupIndex];
+            } else {
+                item = params.create(next);
+                dataset.push(item);
             }
 
             params.each(item, next);

@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var vow = require('vow');
 var request = require('superagent');
-var aggregators = require('../common/aggregators');
+var aggregators = require('./aggregators');
 
 var _reports = {};
 
@@ -22,7 +22,7 @@ var getParams = function(key) {
 };
 
 module.exports = {
-    fetch: function(type, params, volatile) {
+    fetch: function(type, params, ephemeral) {
         var key = getKey(params);
         var deferred = vow.defer();
 
@@ -30,7 +30,7 @@ module.exports = {
             _reports[type] = {};
         }
 
-        if (_reports[type][key] && !volatile) {
+        if (_reports[type][key] && !ephemeral) {
             deferred.resolve(_reports[type][key]);
         } else {
             request
@@ -39,7 +39,7 @@ module.exports = {
                 .set('Accept', 'application/json')
                 .end(function(res) {
                     if (res.ok) {
-                        if (!volatile) _reports[type][key] = res.body;
+                        if (!ephemeral) _reports[type][key] = res.body;
                         deferred.resolve(res.body);
                     } else {
                         deferred.reject(res.text);

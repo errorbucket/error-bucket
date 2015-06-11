@@ -10,7 +10,6 @@ module.exports = function(conn, query, callback) {
     db.aggregate(conn, [
         {$match: match},
         {$group: {
-            //TODO: view refactor needed to display new graph
             _id: {$subtract: ['$timestamp', {$mod: ['$timestamp', Number(query.span)]}]},
             count: {$sum: 1}
         }},
