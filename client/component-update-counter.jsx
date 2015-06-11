@@ -1,7 +1,6 @@
-var React = require('react/addons');
+var React = require('react');
 var moment = require('moment');
-
-var cx = React.addons.classSet;
+var cx = require('classnames');
 
 module.exports = React.createClass({
     render: function() {

@@ -1,7 +1,7 @@
 var _ = require('lodash');
-var React = require('react/addons');
+var React = require('react');
+var cx = require('classnames');
 
-var cx = React.addons.classSet;
 var Timespan = require('./component-timespan.jsx');
 var Browsers = require('./component-browsers.jsx');
 

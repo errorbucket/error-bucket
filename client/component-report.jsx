@@ -97,7 +97,11 @@ module.exports = React.createClass({
         clearInterval(this._interval);
     },
     fetchData: function(props) {
-        Reports.fetch(props.type).done(this.updateData);
+        Reports.fetch(props.type)
+            .then(this.updateData)
+            .catch(function(err) {
+                console.log(err);
+            });
     },
     updateData: function() {
         if (_.isEmpty(this.state.index)) {
