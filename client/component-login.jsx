@@ -1,5 +1,6 @@
 var React = require('react');
 var _ = require('lodash');
+var cx = require('classnames');
 
 module.exports = React.createClass({
     render: function () {
@@ -27,7 +28,7 @@ module.exports = React.createClass({
         _.forEach(this.props.authMethods, function (val) {
             if (val === 'local') return; // continue
             var href = '/auth/' + val;
-            var classNames = React.addons.classSet('login-item', 'login-' + val);
+            var classNames = cx('login-item', 'login-' + val);
             methods.push(
                 <a key={ val } className={ classNames } href={ href }>{ val }</a>
             );

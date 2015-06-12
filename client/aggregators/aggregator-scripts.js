@@ -1,17 +1,16 @@
 var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var reduceBrowsers = require('./reduce-browsers');
-var getMessageSignature = require('./message-signature');
+var reduceTimestamps = require('./helpers/reduce-timestamps');
+var reduceBrowsers = require('./helpers/reduce-browsers');
 
 module.exports = function() {
     return aggregate({
-        groupBy: getMessageSignature,
+        groupBy: 'scriptHash',
         create: function(item) {
             return {
-                title: item.message,
+                title: getTitleScript(item),
                 count: 0,
                 browsers: [],
-                id: getMessageSignature(item)
+                _id: item.hash.scriptHash
             };
         },
         each: function(obj, next) {
@@ -21,3 +20,10 @@ module.exports = function() {
         }
     });
 };
+
+/**
+ * @see server/signatures/script-signature.js
+ */
+function getTitleScript(data) {
+    return data.url + ':' + (data.line || 0);
+}

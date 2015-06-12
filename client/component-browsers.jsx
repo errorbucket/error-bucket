@@ -1,6 +1,6 @@
 var _ = require('lodash');
-var React = require('react/addons');
-var cx = React.addons.classSet;
+var React = require('react');
+var cx = require('classnames');
 
 var slug = function(title) {
     return title && title.toLowerCase().replace(/\s+/g, '-');

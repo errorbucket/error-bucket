@@ -1,7 +1,7 @@
 var _ = require('lodash');
-var vow = require('vow');
+var Promise = require('bluebird');
 var request = require('superagent');
-var aggregators = require('../common/aggregators');
+var aggregators = require('./aggregators');
 
 var _reports = {};
 
@@ -22,32 +22,32 @@ var getParams = function(key) {
 };
 
 module.exports = {
-    fetch: function(type, params, volatile) {
-        var key = getKey(params);
-        var deferred = vow.defer();
+    fetch: function(type, params, ephemeral) {
+        return new Promise(function(resolve, reject) {
 
-        if (!_reports[type]) {
-            _reports[type] = {};
-        }
+            var key = getKey(params);
 
-        if (_reports[type][key] && !volatile) {
-            deferred.resolve(_reports[type][key]);
-        } else {
-            request
-                .get('/reports/' + type)
-                .query(params)
-                .set('Accept', 'application/json')
-                .end(function(res) {
-                    if (res.ok) {
-                        if (!volatile) _reports[type][key] = res.body;
-                        deferred.resolve(res.body);
-                    } else {
-                        deferred.reject(res.text);
-                    }
-                });
-        }
+            if (!_reports[type]) {
+                _reports[type] = {};
+            }
 
-        return deferred.promise();
+            if (_reports[type][key] && !ephemeral) {
+                resolve(_reports[type][key]);
+            } else {
+                request
+                    .get('/reports/' + type)
+                    .query(params)
+                    .set('Accept', 'application/json')
+                    .end(function(res) {
+                        if (res.ok) {
+                            if (!ephemeral) _reports[type][key] = res.body;
+                            resolve(res.body);
+                        } else {
+                            reject(res.text);
+                        }
+                    });
+            }
+        });
     },
     get: function(type, params) {
         return (_reports[type] && _reports[type][getKey(params)]) || null;

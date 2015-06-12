@@ -42,7 +42,11 @@ module.exports = React.createClass({
             from: this.state.from,
             to: this.state.to,
             span: span
-        }, true).done(this.updateGraphData);
+        }, true)
+            .then(this.updateGraphData)
+            .catch(function(err) {
+                console.log(err);
+            });
     },
     updateGraphData: function(items) {
         this.setState({

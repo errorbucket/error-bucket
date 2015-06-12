@@ -1,25 +1,19 @@
 var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var reduceBrowsers = require('./reduce-browsers');
-var sha = require('./sha-hash');
-
-var NO_REFERER = sha('No referer');
+var reduceTimestamps = require('./helpers/reduce-timestamps');
+var reduceBrowsers = require('./helpers/reduce-browsers');
 
 module.exports = function(params) {
     return aggregate({
-        groupBy: 'message',
+        groupBy: 'messageHash',
         filter: function(item) {
-            var referer = item.referer && sha(item.referer.toString());
-
-            return referer === params.id ||
-                (params.id === NO_REFERER && !referer);
+            return item.hash.pageHash === params.id;
         },
         create: function(item) {
             return {
                 title: item.message,
                 count: 0,
                 browsers: [],
-                id: sha(item.message)
+                _id: item.hash.messageHash
             };
         },
         each: function(obj, next) {

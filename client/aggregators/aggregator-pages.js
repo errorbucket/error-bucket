@@ -1,19 +1,16 @@
 var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var reduceBrowsers = require('./reduce-browsers');
-var composeSHAFunc = require('./compose-sha');
-
-var getSHATitlePage = composeSHAFunc(getTitlePage);
+var reduceTimestamps = require('./helpers/reduce-timestamps');
+var reduceBrowsers = require('./helpers/reduce-browsers');
 
 module.exports = function() {
     return aggregate({
-        groupBy: getSHATitlePage,
+        groupBy: 'pageHash',
         create: function(item) {
             return {
                 title: getTitlePage(item),
                 count: 0,
                 browsers: [],
-                id: getSHATitlePage(item)
+                _id: item.hash.pageHash
             };
         },
         each: function(obj, next) {
@@ -24,6 +21,9 @@ module.exports = function() {
     });
 };
 
+/**
+ * @see server/signatures/page-signature.js
+ */
 function getTitlePage(data) {
     return data.referer? data.referer.toString() : 'No referer';
 }

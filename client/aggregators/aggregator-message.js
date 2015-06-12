@@ -1,14 +1,12 @@
 var aggregate = require('./aggregate');
-var reduceTimestamps = require('./reduce-timestamps');
-var getBrowserName = require('./browser-name');
-var getMessageSignature = require('./message-signature');
-var sha = require('./sha-hash');
+var reduceTimestamps = require('./helpers/reduce-timestamps');
+var getBrowserName = require('./helpers/browser-name');
 
 module.exports = function(params) {
     return aggregate({
-        groupBy: getBrowserName,
+        groupBy: 'browserHash',
         filter: function(item) {
-            return getMessageSignature(item) === params.id;
+            return item.hash.messageHash === params.id;
         },
         create: function(item) {
             return {
@@ -17,7 +15,7 @@ module.exports = function(params) {
                 stack: item.stack,
                 line: item.line,
                 url: item.url,
-                id: sha(getBrowserName(item))
+                _id: item.hash.browserHash
             };
         },
         each: function(obj, next) {

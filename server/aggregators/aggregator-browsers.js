@@ -4,7 +4,7 @@ var browserName = require('./browser-name');
 module.exports = function(conn, query, callback) {
     db.aggregate(conn, [
         {$group: {
-            _id: '$hash.browserHash', //TODO: id and _id are duplicated
+            _id: '$hash.browserHash',
             title: {$first: browserName},
             count: {$sum: 1},
             earliest: {$min: '$timestamp'},

@@ -1,7 +1,7 @@
 var _ = require('lodash');
-var React = require('react/addons');
+var React = require('react');
 
-var cx = React.addons.classSet;
+var cx = require('classnames');
 
 var Reports = require('./reports');
 var Stack = require('./component-stack.jsx');
@@ -136,7 +136,11 @@ module.exports = React.createClass({
         });
     },
     fetchData: function(props) {
-        Reports.fetch(props.type, {id: props.id}).done(this.updateData);
+        Reports.fetch(props.type, {id: props.id})
+            .then(this.updateData)
+            .catch(function(err) {
+                console.log(err);
+            });
 
         if (this.hasGraph(props)) {
             Reports.fetch('graph', {
@@ -144,7 +148,11 @@ module.exports = React.createClass({
                 to: this.state.to,
                 message: props.id,
                 span: graphUnitTimeSpan
-            }).done(this.updateGraph);
+            })
+                .then(this.updateGraph)
+                .catch(function(err) {
+                    console.log(err);
+                });
         }
     },
     hasGraph: function(props) {
