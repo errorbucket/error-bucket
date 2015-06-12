@@ -32,6 +32,7 @@
     "is-bot": "0.0.1",
     "lodash": "3.3.x",
     "moment": "^2.9.0",
+    "mongodb": "^2.0.32",
     "nedb": "^1.1.1",
     "page": "1.6.x",
     "passport": "^0.2.1",

@@ -86,7 +86,7 @@ module.exports = React.createClass({
     renderTable: function() {
         var items = _.map(this.state.data, function(data) {
             return <ReportItem
-                key={ data.id }
+                key={ data._id }
                 type={ (this.props.type === 'message') ? 'browsers' : 'messages' }
                 data={ data }
                 timespan={ false } />;

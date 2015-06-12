@@ -25,7 +25,7 @@ module.exports = React.createClass({
 
         var items = _.map(this.state.index, function(data) {
             return <ReportItem
-                key={ data.id }
+                key={ data._id }
                 type={ this.props.type }
                 data={ data }
                 timespan={ {
@@ -183,7 +183,7 @@ function addKey(value, key) {
 
 function addCurrentIndex(index, item) {
     return _.extend(item, {
-        _index: _.findIndex(index, {id: item.id})
+        _index: _.findIndex(index, {_id: item._id})
     });
 }
 

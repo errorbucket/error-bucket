@@ -71,11 +71,11 @@ module.exports = React.createClass({
         var points = [];
         var max = 0;
 
-        for (var t = this.props.from; t <= this.props.to; t += this.props.span) {
+        for (var t = this.props.from, i = 0; t <= this.props.to; t += this.props.span) {
             var count = 0;
 
-            if (data[t]) {
-                count = data[t].count;
+            if (data[i] && data[i]._id == t) {
+                count = data[i++].count;
                 max = Math.max(max, count);
             }
 
