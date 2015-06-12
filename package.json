@@ -18,7 +18,8 @@
     "browserify": "NODE_ENV=production browserify client/app.js -o client/public/app.js",
     "uglify": "uglifyjs client/public/app.js -o client/public/app.js -c unsafe,drop_console,warnings=false -m",
     "watchify": "watchify client/app.js -o client/public/app.js -v",
-    "nodemon": "nodemon --ignore client/ eb.js"
+    "nodemon": "nodemon --ignore client/ eb.js",
+    "test": "mocha --compilers jsx:babel/register --recursive --full-trace --require should --ui bdd"
   },
   "dependencies": {
     "bluebird": "^2.9.27",
@@ -51,10 +52,14 @@
     "useragent": "^2.0.8"
   },
   "devDependencies": {
+    "babel": "^5.5.6",
     "browserify": "9.0.x",
     "browserify-shim": "3.8.x",
+    "jsdom": "^3.1.2",
+    "mocha": "^2.2.5",
     "nodemon": "^1.2.1",
     "reactify": "^1.1.1",
+    "should": "^6.0.3",
     "watchify": "2.4.x"
   },
   "browserify": {
