@@ -8,12 +8,14 @@ var router = express.Router();
 
 var signatures = require('./signatures');
 
+router.use(db.connect);
 router.get('/', function(req, res, next) {
 
     var query = req.query;
 
     if (isbot(req.headers['user-agent']) || !query.message || !query.url) {
-        return res.status(400).end();
+        res.status(400).end();
+		return next();
     }
 
     var date = new Date();
@@ -39,9 +41,10 @@ router.get('/', function(req, res, next) {
         browserHash: signatures.browser(doc)
     };
 
-    db.insert(doc, function(err) {
+    db.insert(req._db, doc, function(err) {
         if (err) {
-            return res.status(500).end();
+            res.status(500).end();
+            return next();
         }
 
         try {
@@ -49,7 +52,9 @@ router.get('/', function(req, res, next) {
         } catch (e) {}
 
         res.end();
+        next();
     });
 });
+router.use(db.close);
 
 module.exports = router;
