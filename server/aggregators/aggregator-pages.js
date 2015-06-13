@@ -1,9 +1,9 @@
 var db = require('../database');
 
-module.exports = function(conn, query, callback) {
+module.exports = function(query, callback) {
     var pageTitle = {$ifNull: ['$referer', 'No referer']};
 
-    db.aggregate(conn, [
+    db.aggregate([
         {$group: {
             _id: '$hash.pageHash',
             title: {$first: pageTitle},
