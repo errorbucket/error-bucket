@@ -1,16 +1,15 @@
 {
-  "name": "ErrorBoard",
+  "name": "ErrorBucket",
   "version": "2.0.0",
-  "description": "Track and fix JavaScript errors fired by your visitor's browsers",
+  "description": "One Bucket to rule them all",
   "main": "eb.js",
   "author": {
-    "name": "Aziz Yuldoshev",
-    "email": "yuldoshev.aziz@gmail.com",
-    "url": "http://lapple.me"
+    "name": "Error Bucket",
+    "url": "https://github.com/errorbucket"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Lapple/ErrorBoard.git"
+    "url": "git://github.com/errorbucket/error-bucket.git"
   },
   "scripts": {
     "start": "npm run build && node eb.js",

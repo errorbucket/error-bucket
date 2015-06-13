@@ -1,92 +1,74 @@
-## ErrorBoard
+<h1 align="center">ErrorBucket</h1>
+<br/>
+<p align="center">
+<img src="https://avatars3.githubusercontent.com/u/12426710?v=3&s=300" style="margin:0 auto;"/>
+<p align="center">
+One bucket to rule all JavaScript errors fired by your visitor's browsers
+</p>
+<p align="center">
+Based on Lapple's
+<a href="https://github.com/Lapple/ErrorBoard">ErrorBoard</a>
+</p>
+</p>
 
-Track and fix JavaScript errors fired by your visitor's browsers.
+<br/>
 
-### Screenshots
+----------
 
-![Messages view](http://i.imgur.com/Db3kudo.png)
+<br/>
 
-![Details view](http://i.imgur.com/I4h33hr.png)
 
-![Browsers view](http://i.imgur.com/99OEaGy.png)
+### Configuration file
 
-### Prerequisites
+#### Basic
 
-* Node.js and NPM
-* A free port
-
-### Installation
-
-    $ git clone git://github.com/Lapple/ErrorBoard.git
-    $ cd ErrorBoard
-    $ npm install
-
-### Configuration
-
-Edit the `config.json` under `config` directory:
+The following codes are in `config.sample.json`, shipped with the project. If no `config.json` found in root directory, `config.sample.json` will be used to generate a default `config.json`.
 
 ```js
 {
-  "dbfile": "db", // path to database file
-  "port": 3000    // web application port
+  "db":"mongodb://localhost:27017/ErrorBucket", // MongoDB Connection String
+  "port": 3000, // Listening Port
+  "baseurl": "http://localhost:3000" // Base URL
 }
 ```
 
-If you do not have a `config.json` under `config` directory, `config.sample.json` will be used to generate a new `config.json` for you. This way, you can get a quick start to explore this project.
-
-### Access Control
-
-By default, this project can be viewed by anyone who knows the URL. If you want to add access control, you can configure it in `config.json` as well:
+#### Advanced
 
 ```js
 {
-  "dbfile": "data/db",
+  "db":"mongodb://localhost:27017/ErrorBucket?maxPoolSize=10",
   "port": 3000,
-  "baseurl": "<Root Path of the Project>",
+  "baseurl": "http://localhost:3000",
+  "logttl": 345600, // Time to Live for Each Error Log
+  "errorAlert": {
+    "interval": 600, // The Unit Time
+    "threshold": 600, // Threshold
+    "recipient": ["user@example.com", "name@example.com"]
+  },
   "auth": {
-    "emailpattern": "<Your Email Pattern>",
-    "methods": {
-      "google-oauth2": {
-        "enabled": true,
-        "clientID": "<Your Client ID>",
-        "clientSecret": "<Your Secret>"
-      }
+    "google": {
+      "enabled": false,
+      "emailpattern": "@example\\.(com|net)",
+      "clientID": "<Your Client ID>",
+      "clientSecret": "<Your Client Secret>"
+    },
+    "github": {
+      "enabled": true,
+      "organizationMembership": ["example"],
+      "clientID": "<Your Client ID>",
+      "clientSecret": "<Your Client Secret>"
+    },
+    "local": {
+      "enabled": false,
+      "users": [
+        {"username": "user", "password": "__pass__"},
+        {"username": "name", "password": "__word__"}
+      ]
     }
   }
 }
 ```
 
-This project makes use of [Passport.js](http://passportjs.org/), which supports more than 140 authentication strategies including your favorite social authentications like Facebook, Twitter and Google. It's worthwhile to take a minute to learn how to use this middleware.
-
-If `auth` field is not set in `config.json` or the `enabled` field of all the methods are set to `false`, then no authentication will be enforced. Everyone can view the content of this project. Otherwise, the methods that have `enabled` field set to `true` will be used to authenticate users.
-
-`emailpattern` under `auth` is optional. If it is not set, everyone who passes the authentication API can log into the project. Otherwise, the users' email addresses will be validated after authentication API has returned.
-
-`emailpattern` can be either regexp or array. For example:
-
-```json
-"auth": {
-    "emailpattern": "@baixing\\.(com|net)$",  
-}
-
-vs.
-
-"auth": {
-    "emailpattern": ["@baixing\\.com", "@baixing\\.net"],
-}
-```
-
-Both ways are supported.
-
-Fields under `methods` should match the name of the corresponding adapter. For example, `google-oauth2` in the example above matches the name of `authentication-google-oauth2.js`.
-
-### Running
-
-After you have everything installed and configured, run:
-
-    npm start
-
-Once the app has started successfully, navigate to `localhost` at specified port (*e.g.* http://127.0.0.1:3000/) to get the error data. Similar error messages are not grouped, however the one can navigate to *Scripts* tab to get the idea which file:line pairs produce most errors.
 
 ### Browser snippet
 
@@ -106,7 +88,7 @@ window.onerror = function( message, url, line, column, error ) {
 
 Replace `127.0.0.1:3000` with the address and the port number your ErrorBoard is running.
 
-### License
+### Original License
 
 (The MIT License)
 
