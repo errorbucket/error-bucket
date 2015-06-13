@@ -9,17 +9,17 @@ var config = require('../config');
 // cookie key used to indicate logged in status
 // set the key in config.json.
 // NOTE: this key MUST match the key used in client/app.js
-var kLoggedIn = 'error_board_logged_in';
+var kLoggedIn = 'error_bucket_logged_in';
 
 module.exports = function (app) {
     if (!config.useAuth) return false;
 
     app.use(cookieParser());
     app.use(session({
-        secret: 'error_board',
+        secret: 'error_bucket',
         resave: false,
         saveUninitialized: false,
-        name: 'error_board.sid'
+        name: 'error_bucket.sid'
     }));
     app.use(bodyParser.urlencoded({
         extended: true

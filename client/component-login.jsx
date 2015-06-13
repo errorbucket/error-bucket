@@ -7,7 +7,7 @@ module.exports = React.createClass({
         return <div className="container">
             <div className="content">
                 <div className="login-box">
-                    <h1>Error Board</h1>
+                    <h1>ErrorBucket</h1>
                     <div className="login-message">
                         { this.renderError() }
                     </div>

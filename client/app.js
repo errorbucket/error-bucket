@@ -14,7 +14,7 @@ var updateApp = function(ctx) {
         _context = ctx;
     }
 
-    var loggedin = cookie.load('error_board_logged_in');
+    var loggedin = cookie.load('error_bucket_logged_in');
 
     var props = {
         state: _context.state,
