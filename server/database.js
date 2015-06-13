@@ -5,25 +5,19 @@ var url = config.db;
 
 var COLLECTION_NAME = 'logs';
 
-function connect(callback) {
-    client.connect(url, callback);
-}
+var _instance = null;
 
-var db = {
+var utils = {
     /**
      * Name of the collection used in the database to store logs
      */
     COLLECTION_NAME: COLLECTION_NAME,
     /**
-     * To provide native way of access
-     */
-    direct_connect: connect,
-    /**
      * Initialize database
      * @param callback Node style callback `function(err, result)`
      */
     initialize: function(callback) {
-        connect(function(err, db) {
+        client.connect(url, function(err, db) {
             if (err) return callback(err, null);
             var promises = [];
             var collection = db.collection(COLLECTION_NAME);
@@ -61,28 +55,11 @@ var db = {
             }));
             Promise.all(promises)
                 .then(function() {
+                    _instance = db; // save the connection instance for connection pool
                     callback(null);
                 })
                 .catch(function(err) {callback(err, null);});
         });
-    },
-    /**
-     * Middleware for MongoDB server connections
-     * The connection instance will be preserved in `req`
-     */
-    connect: function(req, res, next) {
-        client.connect(url, function(err, db) {
-            if (err) return res.status(500).end();
-            req._db = db;
-            next();
-        });
-    },
-    /**
-     * Middleware for ending the MongoDB server connections
-     */
-    close: function(req, res, next) {
-        req._db && req._db.close();
-        req._db = undefined;
     },
     /**
      * Helper method for inserting documents into database
@@ -90,8 +67,8 @@ var db = {
      * @param doc The document to be inserted
      * @param callback Node style callback `function(err, result)`
      */
-    insert: function(db, doc, callback) {
-        db.collection(COLLECTION_NAME).insertOne(doc, callback);
+    insert: function(doc, callback) {
+        _instance.collection(COLLECTION_NAME).insertOne(doc, callback);
     },
     /**
      * Helper method for aggregate queries
@@ -99,8 +76,8 @@ var db = {
      * @param pipe Aggregation pipeline
      * @param callback Node style callback `function(err, result)`
      */
-    aggregate: function(db, pipe, callback) {
-        db.collection(COLLECTION_NAME).aggregate(pipe, callback);
+    aggregate: function(pipe, callback) {
+        _instance.collection(COLLECTION_NAME).aggregate(pipe, callback);
     },
     /**
      * Helper method for count
@@ -109,8 +86,8 @@ var db = {
      * @param callback
      */
     count: function(db, query, callback) {
-        db.collection(COLLECTION_NAME).count(query, {hint: 'timestamp'}, callback);
+        _instance.collection(COLLECTION_NAME).count(query, {hint: 'timestamp'}, callback);
     }
 };
 
-module.exports = db;
+module.exports = utils;
