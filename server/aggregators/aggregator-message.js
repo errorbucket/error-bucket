@@ -1,8 +1,8 @@
 var db = require('../database');
 var browserName = require('./browser-name');
 
-module.exports = function(query, callback) {
-    db.aggregate([
+module.exports = function(conn, query, callback) {
+    db.aggregate(conn, [
         {$match: {'hash.messageHash': {$eq: query.id}}},
         {$group: {
             _id: '$hash.browserHash',
