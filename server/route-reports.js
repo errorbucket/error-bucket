@@ -5,16 +5,13 @@ module.exports = function (req, res, next) {
     var aggregator = aggregators[type];
 
     if (aggregator) {
-        aggregator(req._db, req.query, function(err, result) {
+        aggregator(req.query, function(err, result) {
             if (err) {
-                res.status(500).end();
-                return next();
+                return res.status(500).end();
             }
-            res.json(result);
-            next();
+            return res.json(result);
         });
     } else {
-        res.status(400).end();
-        next();
+        return res.status(400).end();
     }
 };
